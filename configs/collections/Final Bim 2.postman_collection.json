@@ -1,0 +1,223 @@
+{
+	"info": {
+		"_postman_id": "04f8e18e-295f-44c5-b514-be0d9357bd79",
+		"name": "Final Bim 2",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "42619138"
+	},
+	"item": [
+		{
+			"name": "Login",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"username\":\"c_hotel\",\r\n    \"password\":\"12345678\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3333/PenguinStays/v1/auth/login",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3333",
+					"path": [
+						"PenguinStays",
+						"v1",
+						"auth",
+						"login"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Register",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"name\": \"Laura Martínez\",\r\n  \"username\": \"laura123\",\r\n  \"email\": \"laura@gmail.com\",\r\n  \"password\": \"12345678\"\r\n}\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3333/PenguinStays/v1/auth/register",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3333",
+					"path": [
+						"PenguinStays",
+						"v1",
+						"auth",
+						"register"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Registrar dueño hotel",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"name\": \"Carlos Hotel\",\r\n  \"username\": \"c2_hotel\",\r\n  \"email\": \"carlos2@hotel.com\",\r\n  \"password\": \"12345678\",\r\n  \"hotel\": \"661c87974ccdaf3b6c9d9ef1\" \r\n}\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3333/PenguinStays/v1/auth/register-hotel-admin",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3333",
+					"path": [
+						"PenguinStays",
+						"v1",
+						"auth",
+						"register-hotel-admin"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Ver Reservaciones Cliente",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "x-token",
+						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1aWQiOiI2ODEyOWFkMmU0MDM3MTQzZjk4ODg1YzMiLCJyb2xlIjoidXNlciIsImlhdCI6MTc0NjEyNzI4MCwiZXhwIjoxNzQ2MTMwODgwfQ.U43egRpWwG_I8Xrsc7v4w0zDQxZW0iH9vfFIH3oBe7E",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3333/PenguinStays/v1/reservations/client",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3333",
+					"path": [
+						"PenguinStays",
+						"v1",
+						"reservations",
+						"client"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Ver Reservaciones Admin",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "x-token",
+						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1aWQiOiI2ODEyOTg0ZWU0MDM3MTQzZjk4ODg1YmYiLCJyb2xlIjoidXNlciIsImlhdCI6MTc0NjEyNzQwNSwiZXhwIjoxNzQ2MTMxMDA1fQ.6ZKC-GK1M4e_MyDg7OBSl07JUplL-zq2b06HebqS_5U",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3333/PenguinStays/v1/reservations/admin",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3333",
+					"path": [
+						"PenguinStays",
+						"v1",
+						"reservations",
+						"admin"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Ver Reservaciones Hotel",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "x-token",
+						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1aWQiOiI2ODEyOWIxZGU0MDM3MTQzZjk4ODg1YzYiLCJyb2xlIjoidXNlciIsImlhdCI6MTc0NjEyNzUzNCwiZXhwIjoxNzQ2MTMxMTM0fQ.ekPfV4VpifRKv8mrDc5_Q5qYQmDbsGz3ANn6LFI_F4k",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3333/PenguinStays/v1/reservations/hotel",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3333",
+					"path": [
+						"PenguinStays",
+						"v1",
+						"reservations",
+						"hotel"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
