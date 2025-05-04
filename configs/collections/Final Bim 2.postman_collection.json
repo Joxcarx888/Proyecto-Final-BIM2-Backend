@@ -1,7 +1,7 @@
 {
 	"info": {
-		"_postman_id": "04f8e18e-295f-44c5-b514-be0d9357bd79",
-		"name": "Final Bim 2",
+		"_postman_id": "af23ba7c-4bf5-4528-83c0-4dfbf9702ddf",
+		"name": "Final Bim 2 Copy",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
 		"_exporter_id": "42619138"
 	},
@@ -13,7 +13,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"username\":\"c_hotel\",\r\n    \"password\":\"12345678\"\r\n}",
+					"raw": "{\r\n    \"username\":\"admin\",\r\n    \"password\":\"12345678\"\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -21,14 +21,14 @@
 					}
 				},
 				"url": {
-					"raw": "http://localhost:3333/PenguinStays/v1/auth/login",
+					"raw": "http://localhost:3333/penguinManagement/v1/auth/login",
 					"protocol": "http",
 					"host": [
 						"localhost"
 					],
 					"port": "3333",
 					"path": [
-						"PenguinStays",
+						"penguinManagement",
 						"v1",
 						"auth",
 						"login"
@@ -44,7 +44,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n  \"name\": \"Laura Martínez\",\r\n  \"username\": \"laura123\",\r\n  \"email\": \"laura@gmail.com\",\r\n  \"password\": \"12345678\"\r\n}\r\n",
+					"raw": "{\r\n  \"name\": \"Laura Martínez\",\r\n  \"username\": \"laura123\",\r\n  \"email\": \"laura@gmail.com\",\r\n  \"password\": \"12345678\",\r\n  \"hotel\":\"681711139395e35ccfbed746\"\r\n}\r\n",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -52,14 +52,14 @@
 					}
 				},
 				"url": {
-					"raw": "http://localhost:3333/PenguinStays/v1/auth/register",
+					"raw": "http://localhost:3333/penguinManagement/v1/auth/register",
 					"protocol": "http",
 					"host": [
 						"localhost"
 					],
 					"port": "3333",
 					"path": [
-						"PenguinStays",
+						"penguinManagement",
 						"v1",
 						"auth",
 						"register"
@@ -75,7 +75,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n  \"name\": \"Carlos Hotel\",\r\n  \"username\": \"c2_hotel\",\r\n  \"email\": \"carlos2@hotel.com\",\r\n  \"password\": \"12345678\",\r\n  \"hotel\": \"661c87974ccdaf3b6c9d9ef1\" \r\n}\r\n",
+					"raw": "{\r\n  \"name\": \"Carlos Hotel\",\r\n  \"username\": \"c2_hotel\",\r\n  \"email\": \"carlos2@hotel.com\",\r\n  \"password\": \"12345678\",\r\n  \"hotel\": \"681711139395e35ccfbed746\" \r\n}\r\n",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -83,14 +83,14 @@
 					}
 				},
 				"url": {
-					"raw": "http://localhost:3333/PenguinStays/v1/auth/register-hotel-admin",
+					"raw": "http://localhost:3333/penguinManagement/v1/auth/register-hotel-admin",
 					"protocol": "http",
 					"host": [
 						"localhost"
 					],
 					"port": "3333",
 					"path": [
-						"PenguinStays",
+						"penguinManagement",
 						"v1",
 						"auth",
 						"register-hotel-admin"
@@ -214,6 +214,302 @@
 						"v1",
 						"reservations",
 						"hotel"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Agregar Hotel",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "x-token",
+						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1aWQiOiI2ODEyOWIxZGU0MDM3MTQzZjk4ODg1YzYiLCJyb2xlIjoidXNlciIsImlhdCI6MTc0NjEyNzUzNCwiZXhwIjoxNzQ2MTMxMTM0fQ.ekPfV4VpifRKv8mrDc5_Q5qYQmDbsGz3ANn6LFI_F4k",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"name\": \"Hotel Planta Azul\",\r\n  \"address\": \"Av. Central 123, Ciudad\",\r\n  \"category\": \"4 estrellas\",\r\n  \"roomsAvailable\": 25,\r\n  \"amenities\": \"WiFi, Piscina, Gimnasio\"\r\n}\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3333/penguinManagement/v1/hotels/add-hotel/",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3333",
+					"path": [
+						"penguinManagement",
+						"v1",
+						"hotels",
+						"add-hotel",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Ver Hoteles",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "x-token",
+						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1aWQiOiI2ODEyOWIxZGU0MDM3MTQzZjk4ODg1YzYiLCJyb2xlIjoidXNlciIsImlhdCI6MTc0NjEyNzUzNCwiZXhwIjoxNzQ2MTMxMTM0fQ.ekPfV4VpifRKv8mrDc5_Q5qYQmDbsGz3ANn6LFI_F4k",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"name\": \"Hotel Oasis\",\r\n  \"address\": \"Av. Central 123, Ciudad\",\r\n  \"category\": \"4 estrellas\",\r\n  \"roomsAvailable\": 25,\r\n  \"amenities\": \"WiFi, Piscina, Gimnasio\"\r\n}\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3333/penguinManagement/v1/hotels/",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3333",
+					"path": [
+						"penguinManagement",
+						"v1",
+						"hotels",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Agregar Room",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "x-token",
+						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1aWQiOiI2ODE3OWU4Yzg4NDkzMjUwN2FiZGI5ZGIiLCJyb2xlIjoidXNlciIsImlhdCI6MTc0NjM3ODQwMywiZXhwIjoxNzQ2MzgyMDAzfQ.kbdpnfGM3Q0n_eABWqIDxk5M55LEe_NgUFeecKuFaW0",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"roomNumber\": 13,\r\n  \"type\": \"Room\",\r\n  \"price\": 100.00\r\n}\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3333/penguinManagement/v1/rooms/",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3333",
+					"path": [
+						"penguinManagement",
+						"v1",
+						"rooms",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Ver Rooms Admin Hotel",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "x-token",
+						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1aWQiOiI2ODE3MTMzNGUxMjRhZDZjZWY2MTRhM2QiLCJyb2xlIjoidXNlciIsImlhdCI6MTc0NjM4NzIzMSwiZXhwIjoxNzQ2MzkwODMxfQ.0r009Vo_JpF-mrI507h14l0f9i7-LQ3HskQB-ejAejU",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"roomNumber\": 101,\r\n  \"type\": \"Suite\",\r\n  \"price\": 150.00\r\n}\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3333/penguinManagement/v1/rooms/my-hotel",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3333",
+					"path": [
+						"penguinManagement",
+						"v1",
+						"rooms",
+						"my-hotel"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Agregar una reservacion",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "x-token",
+						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1aWQiOiI2ODEyOWFkMmU0MDM3MTQzZjk4ODg1YzMiLCJyb2xlIjoidXNlciIsImlhdCI6MTc0NjM4MzEyOCwiZXhwIjoxNzQ2Mzg2NzI4fQ.-bHkNOsqakhBaxShq_dC7cbsG5ZZpqKNj0Fqugci9cU",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"roomList\": [\"681714da80f4a98647714587\"]\r\n\r\n}\r\n\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3333/penguinManagement/v1/reservations/reservation/681711139395e35ccfbed746",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3333",
+					"path": [
+						"penguinManagement",
+						"v1",
+						"reservations",
+						"reservation",
+						"681711139395e35ccfbed746"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Eliminar Reservacion",
+			"request": {
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "x-token",
+						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1aWQiOiI2ODEyOWFkMmU0MDM3MTQzZjk4ODg1YzMiLCJyb2xlIjoidXNlciIsImlhdCI6MTc0NjM4MzA1NSwiZXhwIjoxNzQ2Mzg2NjU1fQ.-jSH1kSjgULRzl9Cts4XkKJ3hAtpvWIYMQl33H-Y38s",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "http://localhost:3333/penguinManagement/v1/reservations/reservation/681711139395e35ccfbed746",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3333",
+					"path": [
+						"penguinManagement",
+						"v1",
+						"reservations",
+						"reservation",
+						"681711139395e35ccfbed746"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Eliminar Rooms de Reservacion",
+			"request": {
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "x-token",
+						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1aWQiOiI2ODEyOWFkMmU0MDM3MTQzZjk4ODg1YzMiLCJyb2xlIjoidXNlciIsImlhdCI6MTc0NjM4MzEyOCwiZXhwIjoxNzQ2Mzg2NzI4fQ.-bHkNOsqakhBaxShq_dC7cbsG5ZZpqKNj0Fqugci9cU",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"roomList\": [\"681714da80f4a98647714587\"]\r\n\r\n}\r\n\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3333/penguinManagement/v1/reservations/delete-rooms",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3333",
+					"path": [
+						"penguinManagement",
+						"v1",
+						"reservations",
+						"delete-rooms"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Agregar Factura",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "x-token",
+						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1aWQiOiI2ODEyOWFkMmU0MDM3MTQzZjk4ODg1YzMiLCJyb2xlIjoidXNlciIsImlhdCI6MTc0NjM4NzQzMywiZXhwIjoxNzQ2MzkxMDMzfQ.ingSDGM8Wv5yGzJmhEZ9UuGezXOeMCulqsdXvlZ-KkQ",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"diasEstadia\": 2,\r\n  \"hotelId\": \"681711139395e35ccfbed746\"\r\n}\r\n\r\n\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3333/penguinManagement/v1/invoice/create",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3333",
+					"path": [
+						"penguinManagement",
+						"v1",
+						"invoice",
+						"create"
 					]
 				}
 			},

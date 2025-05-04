@@ -8,6 +8,9 @@ import { dbConnection } from './mongo.js';
 import limiter from '../src/middlewares/validar-cant-peticiones.js';
 import authRoutes from '../src/auth/auth.routes.js';
 import reservationRoutes from '../src/reservations/reservation.routes.js';
+import hotelRouter from '../src/hotels/hotel.routes.js'
+import roomRouter from '../src/rooms/room.routes.js';
+import invoiceRouter from '../src/invoices/invoice.routes.js';
 
 
 const middlewares = (app) => {
@@ -20,8 +23,11 @@ const middlewares = (app) => {
 }
 
 const routes = (app) =>{
-    app.use('/PenguinStays/v1/auth', authRoutes);
-    app.use('/PenguinStays/v1/reservations', reservationRoutes);
+    app.use('/penguinManagement/v1/auth', authRoutes);
+    app.use('/penguinManagement/v1/hotels', hotelRouter);
+    app.use('/penguinManagement/v1/reservations', reservationRoutes);
+    app.use('/penguinManagement/v1/rooms', roomRouter);
+    app.use('/penguinManagement/v1/invoice', invoiceRouter);
 }
 
 const conectarDB = async () => {

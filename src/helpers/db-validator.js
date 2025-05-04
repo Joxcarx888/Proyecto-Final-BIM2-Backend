@@ -1,5 +1,5 @@
 import User from '../users/user.model.js';
-//import Hotel from '../hotels/hotel.model.js';
+import Hotel from '../hotels/hotel.model.js';
 
 export const existenteEmail = async (email = '') =>{
     const existeEmail = await User.findOne({ email });
@@ -17,10 +17,10 @@ export const existeUsuarioById = async (id = '') => {
     }
 }
 
-/* export const existeHotelById = async (id = '') => {
+export const existeHotelById = async (id = '') => {
     const existeHotel = await Hotel.findById(id);
 
     if (!existeHotel) {
         throw new Error(`El hotel con ID ${id} no existe en la base de datos`);
     }
-}; */
+};

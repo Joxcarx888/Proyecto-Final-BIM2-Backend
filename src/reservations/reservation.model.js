@@ -15,10 +15,10 @@ const ReservationSchema = new Schema(
     roomList: [
       {
         type: Schema.Types.ObjectId,
-        required: [true, "Se requiere el ID de la habitación"],
-      },
+        ref: "Room",
+      }
     ],
-    estado: {
+    state: {
       type: Boolean,
       default: true,
     },
