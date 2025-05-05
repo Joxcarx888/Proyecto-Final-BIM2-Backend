@@ -2,7 +2,8 @@ import { Router } from "express";
 import {
   createInvoice,
   getInvoicesByClient,
-  getInvoicesByHotel
+  getInvoicesByHotel,
+  createInvoiceEvent
 } from "./invoice.controller.js";
 import { validarJWT } from "../middlewares/validar-jwt.js";
 import { tieneRol } from "../middlewares/validar-roles.js";
@@ -29,5 +30,13 @@ router.get(
   tieneRol("HOTEL"),
   getInvoicesByHotel
 );
+
+router.post(
+  "/create/event",
+  validarJWT,
+  tieneRol("CLIENT"),
+  createInvoiceEvent
+);
+
 
 export default router;

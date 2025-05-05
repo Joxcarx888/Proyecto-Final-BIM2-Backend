@@ -1,5 +1,8 @@
 import Invoice from "./invoice.model.js";
 import Reservation from "../reservations/reservation.model.js";
+import Event from "../events/event.model.js";
+import InvoiceEvent from "./invoiceEvent.model.js";
+
 import Room from "../rooms/room.model.js";
 
 
@@ -106,5 +109,62 @@ export const getInvoicesByClient = async (req, res) => {
       res.status(500).json({ message: "Error interno del servidor" });
     }
   };
+
+
+  export const createInvoiceEvent = async (req, res) => {
+    try {
+      const { eventId } = req.body;
+  
+      if (!eventId) {
+        return res.status(400).json({ message: "Falta el ID del evento (eventId)" });
+      }
+  
+      const userId = req.usuario._id;
+  
+      const event = await Event.findOne({
+        _id: eventId,
+        estado: true 
+      }).populate("hotel");
+      
+  
+      if (!event) {
+        return res.status(404).json({ message: "No se encontró el evento indicado" });
+      }
+  
+      if (event.usuario.toString() !== userId.toString()) {
+        return res.status(403).json({ message: "No tienes permisos para facturar este evento" });
+      }
+  
+      if (!event.hotel) {
+        return res.status(400).json({ message: "El evento no está vinculado a ningún hotel" });
+      }
+  
+      const precioEvento = event.precio;
+      const total = precioEvento;
+  
+      const nuevaFacturaEvento = new InvoiceEvent({
+        user: userId,
+        hotel: event.hotel._id,
+        event: event._id,
+        precioEvento,
+        total,
+        fechaCancelacion: new Date()
+      });
+  
+      await nuevaFacturaEvento.save();
+  
+      event.estado = false;
+      await event.save();
+  
+      res.status(201).json({
+        message: "Factura del evento generada correctamente",
+        invoiceEvent: nuevaFacturaEvento,
+      });
+    } catch (error) {
+      console.error("Error al crear factura de evento:", error);
+      res.status(500).json({ message: "Error interno del servidor" });
+    }
+  };
+  
   
 

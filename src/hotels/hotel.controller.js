@@ -46,11 +46,12 @@ export const addHotel = async (req, res)=>{
         // if(user.role == "ADMIN_ROLE" || user.role == "OWNER_ROLE"){
         console.log(data)
             const hotel = await Hotel.create({ 
-                name:data.name,
-                address:data.address,
-                category:data.category,
-                roomsAvailable:data.roomsAvailable,
-                amenities:data.amenities
+                name: data.name,
+                address: data.address,
+                category: data.category,
+                roomsAvailable: data.roomsAvailable,
+                amenities: data.amenities,
+                priceEvent: data.priceEvent
              })
             
             return res.status(200).json({
@@ -93,11 +94,12 @@ export const updateHotel = async (req, res = response)=>{
         // if(user.role == "ADMIN_ROLE" || user.role == "OWNER_ROLE"){
     
         const hotel = await Hotel.findByIdAndUpdate(id, { 
-            name:data.name,
-            address:data.address,
-            category:data.category,
-            roomsAvailable:data.roomsAvailable,
-            amenities:data.amenities
+            name: data.name,
+            address: data.address,
+            category: data.category,
+            roomsAvailable: data.roomsAvailable,
+            amenities: data.amenities,
+            priceEvent: data.priceEvent
         } , {new:true})
         return res.status(200).json({
             success: true,

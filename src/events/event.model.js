@@ -18,8 +18,9 @@ const EventSchema = new Schema(
             required : [true, "cronograma is required"],
         },
         time : {
-            type : Number,
+            type: String,
             required: [true, "time is required"],
+            match: [/^([01]\d|2[0-3]):([0-5]\d)$/, "Formato de hora inválido (hh:mm)"],
         },
         hotel: {
             type: Schema.Types.ObjectId,
