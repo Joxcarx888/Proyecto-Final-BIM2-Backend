@@ -11,6 +11,8 @@ import reservationRoutes from '../src/reservations/reservation.routes.js';
 import hotelRouter from '../src/hotels/hotel.routes.js'
 import roomRouter from '../src/rooms/room.routes.js';
 import invoiceRouter from '../src/invoices/invoice.routes.js';
+import userRouter from '../src/users/user.routes.js';
+import eventRouter from '../src/events/event.routes.js';
 
 
 const middlewares = (app) => {
@@ -28,6 +30,8 @@ const routes = (app) =>{
     app.use('/penguinManagement/v1/reservations', reservationRoutes);
     app.use('/penguinManagement/v1/rooms', roomRouter);
     app.use('/penguinManagement/v1/invoice', invoiceRouter);
+    app.use('/penguinManagement/v1/users', userRouter);
+    app.use('/penguinManagement/v1/events', eventRouter);
 }
 
 const conectarDB = async () => {

@@ -3,29 +3,32 @@ import { response } from 'express';
 
 export const createEvent = async (req, res = response) => {
     try {
-        const { event, date, time, hotel, precio } = req.body;
-        const role = req.usuario.role;
+        const { event, cronograma, time, hotel, precio } = req.body;
+        const user = req.usuario._id;
+
         const newEvent = await Event.create({
+            usuario: user,
             event,
-            date,
+            date: cronograma,
             time,
             hotel,
-            precio, 
-            role,
+            precio,
         });
+
         return res.status(201).json({
             msg: 'Evento creado exitosamente',
             event: newEvent,
         });
     } catch (error) {
         console.error('Error al crear evento:', error);
-        
+
         return res.status(500).json({
             msg: 'Error al crear evento',
             error: error.message,
         });
     }
 };
+
 
 export const getEvents = async (req, res = response) => {
     try {
@@ -46,27 +49,27 @@ export const getEvents = async (req, res = response) => {
 
 export const listEventsAdmin = async (req, res) => {
     try {
-        const { estado } = req.query;
-        const filtro = { role: 'ADMIN' };
-
-        if (estado !== undefined) {
-            filtro.estado = estado === 'true';
+        if (req.usuario.role !== 'ADMIN') {
+            return res.status(403).json({ msg: 'Acceso denegado. No eres administrador.' });
         }
-
-        const events = await Event.find(filtro);
-
-        res.json({
-            ok: true,
+    
+        const events = await Event.find()
+            .populate('hotel', 'name location');  
+    
+        return res.json({
+            msg: 'Lista de eventos (admin)',
+            total: events.length,
             events
         });
-    } catch (error) {
-        res.status(500).json({
-            ok: false,
-            msg: 'Error al listar los eventos de admin',
+        } catch (error) {
+        console.error('Error al listar eventos como admin:', error);
+        return res.status(500).json({
+            msg: 'Error interno al obtener eventos',
             error: error.message
         });
-    }
-};
+        }
+  };
+  
 
 export const updateEvent = async (req, res = response) => {
     try {

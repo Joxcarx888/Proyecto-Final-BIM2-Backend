@@ -1,5 +1,6 @@
 import User from '../users/user.model.js';
 import Hotel from '../hotels/hotel.model.js';
+import Event from '../events/event.model.js';
 
 export const existenteEmail = async (email = '') =>{
     const existeEmail = await User.findOne({ email });
@@ -24,3 +25,11 @@ export const existeHotelById = async (id = '') => {
         throw new Error(`El hotel con ID ${id} no existe en la base de datos`);
     }
 };
+
+export const existenteEvent = async (id = '') => {
+    const existeEvent = await Event.findById(id);
+
+    if (!existeEvent) {
+        throw new Error(`El evento con ID ${id} no existe en la base de datos`);
+    }
+}

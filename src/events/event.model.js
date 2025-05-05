@@ -2,6 +2,11 @@ import { Schema, model } from "mongoose"
 
 const EventSchema = new Schema(
     {
+        usuario: {
+            type: Schema.Types.ObjectId,
+            ref: "user",
+            default: null,
+        },
         event : {
             type: String,
             required: [true, "Name is required"],
@@ -24,11 +29,6 @@ const EventSchema = new Schema(
         precio: {
             type: Number,
             required: [true, "precio is required"]
-        },
-        role: {
-            type: String,
-            enum: ["ADMIN", "USER"],
-            default: "USER",
         },
           estado: {
             type: Boolean,
