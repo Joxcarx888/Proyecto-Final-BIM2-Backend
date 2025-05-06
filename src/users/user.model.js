@@ -36,7 +36,7 @@ const UserSchema = new Schema(
       ref: "Hotel",
       default: null,
     },
-    estado: {
+    state: {
       type: Boolean,
       default: true,
     },

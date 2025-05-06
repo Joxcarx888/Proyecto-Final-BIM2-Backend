@@ -21,7 +21,7 @@ export const login = async (req, res) => {
             });
         }
  
-        if(!user.estado){
+        if(!user.state){
             return res.status(400).json({
                 msg: 'El usuario no existe en la base de datos'
             });
@@ -106,7 +106,7 @@ export const registerHotelAdmin = async (req, res) => {
         password: encryptedPassword,
         role: "HOTEL",
         hotel,
-        estado: false,
+        state: false,
       });
   
       return res.status(201).json({
@@ -116,7 +116,7 @@ export const registerHotelAdmin = async (req, res) => {
           email: user.email,
           role: user.role,
           hotel: user.hotel,
-          estado: user.estado,
+          state: user.estado,
         },
       });
   

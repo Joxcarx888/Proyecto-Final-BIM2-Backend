@@ -1,7 +1,7 @@
 import { body } from "express-validator";
 import mongoose from "mongoose";
 import { validarCampos } from "./validar-campos.js";
-import { existenteEmail } from "../helpers/db-validator.js";
+import { existenteEmail /*, existeHotelById */} from "../helpers/db-validator.js";
 
 export const registerValidator = [
   body("name", "The name is required").not().isEmpty(),
@@ -28,7 +28,8 @@ export const registerHotelAdminValidator = [
     .isLength({ min: 8 })
     .withMessage("Password must be at least 8 characters long"),
   body("hotel", "Hotel ID is required").not().isEmpty(),
-  body("hotel", "Invalid Hotel ID").custom(id => mongoose.Types.ObjectId.isValid(id)),
+  //body("hotel").custom(existeHotelById), 
   validarCampos,
 ];
+
 
