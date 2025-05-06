@@ -1,7 +1,12 @@
 {
 	"info": {
+<<<<<<< HEAD
 		"_postman_id": "af23ba7c-4bf5-4528-83c0-4dfbf9702ddf",
 		"name": "Final Bim 2 Copy",
+=======
+		"_postman_id": "04f8e18e-295f-44c5-b514-be0d9357bd79",
+		"name": "Final Bim 2",
+>>>>>>> acarrillo-2020412
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
 		"_exporter_id": "42619138"
 	},
@@ -13,7 +18,11 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
+<<<<<<< HEAD
 					"raw": "{\r\n    \"username\":\"admin\",\r\n    \"password\":\"12345678\"\r\n}",
+=======
+					"raw": "{\r\n    \"username\":\"c_hotel\",\r\n    \"password\":\"12345678\"\r\n}",
+>>>>>>> acarrillo-2020412
 					"options": {
 						"raw": {
 							"language": "json"
@@ -21,14 +30,22 @@
 					}
 				},
 				"url": {
+<<<<<<< HEAD
 					"raw": "http://localhost:3333/penguinManagement/v1/auth/login",
+=======
+					"raw": "http://localhost:3333/PenguinStays/v1/auth/login",
+>>>>>>> acarrillo-2020412
 					"protocol": "http",
 					"host": [
 						"localhost"
 					],
 					"port": "3333",
 					"path": [
+<<<<<<< HEAD
 						"penguinManagement",
+=======
+						"PenguinStays",
+>>>>>>> acarrillo-2020412
 						"v1",
 						"auth",
 						"login"
@@ -44,7 +61,11 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
+<<<<<<< HEAD
 					"raw": "{\r\n  \"name\": \"Laura Martínez\",\r\n  \"username\": \"laura123\",\r\n  \"email\": \"laura@gmail.com\",\r\n  \"password\": \"12345678\",\r\n  \"hotel\":\"681711139395e35ccfbed746\"\r\n}\r\n",
+=======
+					"raw": "{\r\n  \"name\": \"Laura Martínez\",\r\n  \"username\": \"laura123\",\r\n  \"email\": \"laura@gmail.com\",\r\n  \"password\": \"12345678\"\r\n}\r\n",
+>>>>>>> acarrillo-2020412
 					"options": {
 						"raw": {
 							"language": "json"
@@ -52,14 +73,22 @@
 					}
 				},
 				"url": {
+<<<<<<< HEAD
 					"raw": "http://localhost:3333/penguinManagement/v1/auth/register",
+=======
+					"raw": "http://localhost:3333/PenguinStays/v1/auth/register",
+>>>>>>> acarrillo-2020412
 					"protocol": "http",
 					"host": [
 						"localhost"
 					],
 					"port": "3333",
 					"path": [
+<<<<<<< HEAD
 						"penguinManagement",
+=======
+						"PenguinStays",
+>>>>>>> acarrillo-2020412
 						"v1",
 						"auth",
 						"register"
@@ -75,7 +104,11 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
+<<<<<<< HEAD
 					"raw": "{\r\n  \"name\": \"Carlos Hotel\",\r\n  \"username\": \"c2_hotel\",\r\n  \"email\": \"carlos2@hotel.com\",\r\n  \"password\": \"12345678\",\r\n  \"hotel\": \"681711139395e35ccfbed746\" \r\n}\r\n",
+=======
+					"raw": "{\r\n  \"name\": \"Carlos Hotel\",\r\n  \"username\": \"c2_hotel\",\r\n  \"email\": \"carlos2@hotel.com\",\r\n  \"password\": \"12345678\",\r\n  \"hotel\": \"661c87974ccdaf3b6c9d9ef1\" \r\n}\r\n",
+>>>>>>> acarrillo-2020412
 					"options": {
 						"raw": {
 							"language": "json"
@@ -83,14 +116,22 @@
 					}
 				},
 				"url": {
+<<<<<<< HEAD
 					"raw": "http://localhost:3333/penguinManagement/v1/auth/register-hotel-admin",
+=======
+					"raw": "http://localhost:3333/PenguinStays/v1/auth/register-hotel-admin",
+>>>>>>> acarrillo-2020412
 					"protocol": "http",
 					"host": [
 						"localhost"
 					],
 					"port": "3333",
 					"path": [
+<<<<<<< HEAD
 						"penguinManagement",
+=======
+						"PenguinStays",
+>>>>>>> acarrillo-2020412
 						"v1",
 						"auth",
 						"register-hotel-admin"
@@ -218,6 +259,7 @@
 				}
 			},
 			"response": []
+<<<<<<< HEAD
 		},
 		{
 			"name": "Agregar Hotel",
@@ -514,6 +556,8 @@
 				}
 			},
 			"response": []
+=======
+>>>>>>> acarrillo-2020412
 		}
 	]
 }

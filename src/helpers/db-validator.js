@@ -1,6 +1,9 @@
 import User from '../users/user.model.js';
 import Hotel from '../hotels/hotel.model.js';
+<<<<<<< HEAD
 import Event from '../events/event.model.js';
+=======
+>>>>>>> acarrillo-2020412
 
 export const existenteEmail = async (email = '') =>{
     const existeEmail = await User.findOne({ email });
@@ -24,6 +27,7 @@ export const existeHotelById = async (id = '') => {
     if (!existeHotel) {
         throw new Error(`El hotel con ID ${id} no existe en la base de datos`);
     }
+<<<<<<< HEAD
 };
 
 export const existenteEvent = async (id = '') => {
@@ -33,3 +37,6 @@ export const existenteEvent = async (id = '') => {
         throw new Error(`El evento con ID ${id} no existe en la base de datos`);
     }
 }
+=======
+};
+>>>>>>> acarrillo-2020412

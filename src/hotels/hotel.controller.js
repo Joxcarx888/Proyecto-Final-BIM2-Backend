@@ -46,12 +46,21 @@ export const addHotel = async (req, res)=>{
         // if(user.role == "ADMIN_ROLE" || user.role == "OWNER_ROLE"){
         console.log(data)
             const hotel = await Hotel.create({ 
+<<<<<<< HEAD
                 name: data.name,
                 address: data.address,
                 category: data.category,
                 roomsAvailable: data.roomsAvailable,
                 amenities: data.amenities,
                 priceEvent: data.priceEvent
+=======
+                name:data.name,
+                address:data.address,
+                category:data.category,
+                roomsAvailable:data.roomsAvailable,
+                amenities:data.amenities,
+                rooms:data.rooms
+>>>>>>> acarrillo-2020412
              })
             
             return res.status(200).json({
@@ -94,12 +103,21 @@ export const updateHotel = async (req, res = response)=>{
         // if(user.role == "ADMIN_ROLE" || user.role == "OWNER_ROLE"){
     
         const hotel = await Hotel.findByIdAndUpdate(id, { 
+<<<<<<< HEAD
             name: data.name,
             address: data.address,
             category: data.category,
             roomsAvailable: data.roomsAvailable,
             amenities: data.amenities,
             priceEvent: data.priceEvent
+=======
+            name:data.name,
+            address:data.address,
+            category:data.category,
+            roomsAvailable:data.roomsAvailable,
+            amenities:data.amenities,
+            rooms:data.rooms
+>>>>>>> acarrillo-2020412
         } , {new:true})
         return res.status(200).json({
             success: true,
@@ -179,3 +197,7 @@ export const deleteHotel = async (req, res = response)=>{
         })
     }
 }
+<<<<<<< HEAD
+=======
+
+>>>>>>> acarrillo-2020412

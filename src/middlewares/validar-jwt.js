@@ -11,10 +11,14 @@ export const validarJWT = async (req, res, next) => {
     }
 
     try {
+<<<<<<< HEAD
         const { uid } = jwt.verify(token, process.env.SECRETORPRIVATEKEY);
         console.log("UID extraído del token:", uid);  // Verifica que el UID está correctamente extraído
+=======
+        const { uid } = jwt.verify(token, process.env.SECRETORPRIVATEKEY)
+>>>>>>> acarrillo-2020412
 
-        const usuario = await Usuario.findById(uid);
+        const usuario = await Usuario.findById(uid)
 
         if (!usuario) {
             return res.status(401).json({
@@ -22,17 +26,25 @@ export const validarJWT = async (req, res, next) => {
             });
         }
 
+<<<<<<< HEAD
         if (!usuario.state) {
+=======
+        if(!usuario.state){
+>>>>>>> acarrillo-2020412
             return res.status(401).json({
                 msg: "Token no válido - Usuario con estado: false"
             });
         }
 
+<<<<<<< HEAD
         req.usuario = usuario;  // Esto asegura que req.usuario se asigna correctamente
         req.uid = uid;  // Aquí estamos asignando el UID correctamente
         console.log("UID asignado en req:", req.uid);  // Verifica si se asigna correctamente
+=======
+        req.usuario = usuario
+>>>>>>> acarrillo-2020412
 
-        next();
+        next()
     } catch (e) {
         console.log(e);
         res.status(401).json({

@@ -22,11 +22,17 @@ const HotelSchema = Schema(
         amenities: {
             type: String
         },
+<<<<<<< HEAD
         priceEvent: {
             type: Number,
             required: [true, "Price is required"]
         },
         
+=======
+        rooms: {
+            type: []
+        },
+>>>>>>> acarrillo-2020412
         state:{
             type: Boolean,
             default: true

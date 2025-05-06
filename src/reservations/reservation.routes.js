@@ -4,8 +4,12 @@ import {
   listarReservacionesHotel, 
   listarTodasReservacionesAdmin,
   addReservation,
+<<<<<<< HEAD
   removeRooms,
   deleteReservation
+=======
+  removeRooms
+>>>>>>> acarrillo-2020412
 } from "../reservations/reservation.controller.js";
 import { validarJWT } from "../middlewares/validar-jwt.js";
 import { tieneRol } from "../middlewares/validar-roles.js";
@@ -36,11 +40,15 @@ router.get(
 router.post(
   '/reservation/:id',
   validarJWT,
+<<<<<<< HEAD
   tieneRol('CLIENT'),
+=======
+>>>>>>> acarrillo-2020412
   addReservation
 )
 
 router.delete(
+<<<<<<< HEAD
   '/delete-rooms',
   validarJWT,
   tieneRol('CLIENT'),
@@ -54,5 +62,11 @@ router.delete(
   deleteReservation
 );
 
+=======
+  '/delete-rooms/:id',
+  validarJWT,
+  removeRooms
+)
+>>>>>>> acarrillo-2020412
 
 export default router;

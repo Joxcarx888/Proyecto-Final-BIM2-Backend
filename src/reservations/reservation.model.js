@@ -12,12 +12,18 @@ const ReservationSchema = new Schema(
       ref: "Hotel",
       required: [true, "El hotel es obligatorio"],
     },
+<<<<<<< HEAD
     roomList: [
       {
         type: Schema.Types.ObjectId,
         ref: "Room",
       }
     ],
+=======
+    roomList: {
+      type: []
+    },
+>>>>>>> acarrillo-2020412
     state: {
       type: Boolean,
       default: true,
