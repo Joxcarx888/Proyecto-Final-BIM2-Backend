@@ -1,0 +1,40 @@
+[{
+  "_id": {
+    "$oid": "6816e6a3ecfe6c10efb0993b"
+  },
+  "user": {
+    "$oid": "68158edb31d6b1c37eb35054"
+  },
+  "hotel": {
+    "$oid": "681188eedc385ef6390fcaf9"
+  },
+  "roomList": [
+    {
+      "number": "1",
+      "floor": "2",
+      "building": "A",
+      "type": "Pequeña",
+      "capacity": "3 personas",
+      "disponibilityDate": "5 de mayo",
+      "price": 75,
+      "state": false
+    },
+    {
+      "number": "2",
+      "floor": "3",
+      "building": "A",
+      "type": "Mediana",
+      "capacity": "5 personas",
+      "disponibilityDate": "5 de mayo",
+      "price": 100,
+      "state": false
+    }
+  ],
+  "state": true,
+  "createdAt": {
+    "$date": "2025-05-04T04:01:39.343Z"
+  },
+  "updatedAt": {
+    "$date": "2025-05-04T04:07:14.501Z"
+  }
+}]
