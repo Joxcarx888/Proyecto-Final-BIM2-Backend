@@ -181,20 +181,27 @@ export const deleteHotel = async (req, res = response)=>{
 }
 
 export const getHotelByName = async (req, res) => {
-    try {
-        const { name } = req.params
-    
-        const hotel = await Hotel.findOne({name})
-        return res.status(200).json({
-            success: true,
-            message: "Hotel found",
-            hotel
-        })
-    } catch (e) {
-        console.log(e)
-        return res.status(500).json({
-            message: "Hotel not found",
-            error: e.message
-        })
+  try {
+    const { name } = req.params;
+
+    const hotel = await Hotel.findOne({ name });
+    if (!hotel) {
+      return res.status(404).json({ message: "Hotel not found" });
     }
-}
+
+    const rooms = await Room.find({ hotel: hotel._id });
+
+    return res.status(200).json({
+      success: true,
+      message: "Hotel and rooms found",
+      hotel,
+      rooms,
+    });
+  } catch (e) {
+    console.log(e);
+    return res.status(500).json({
+      message: "Error fetching hotel",
+      error: e.message,
+    });
+  }
+};
