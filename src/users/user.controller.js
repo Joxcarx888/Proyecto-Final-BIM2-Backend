@@ -105,3 +105,63 @@ export const deleteUser = async (req, res) => {
         });
     }
 };
+
+export const acceptUser = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const user = await Usuario.findById(id);
+    if (!user) {
+      return res.status(404).json({ msg: "Usuario no encontrado" });
+    }
+
+    user.state = true;
+    await user.save();
+
+    return res.status(200).json({
+      msg: "Usuario activado correctamente",
+      user: {
+        id: user._id,
+        username: user.username,
+        email: user.email,
+        state: user.state
+      }
+    });
+
+  } catch (error) {
+    console.error("Error en acceptUser:", error);
+    return res.status(500).json({
+      msg: "Error al activar usuario",
+      error: error.message
+    });
+  }
+};
+
+export const getUsers = async (req, res) => {
+  try {
+    const { state } = req.query; 
+    let query = {};
+
+    if (state !== undefined) {
+      query.state = state === "true"; 
+    }
+
+    const users = await Usuario.find(query)
+      .select("-password")
+      .populate("hotel", "name");  
+
+    return res.status(200).json({
+      msg: "Usuarios obtenidos correctamente",
+      total: users.length,
+      users
+    });
+
+  } catch (error) {
+    console.error("Error en getUsers:", error);
+    return res.status(500).json({
+      msg: "Error al obtener usuarios",
+      error: error.message
+    });
+  }
+};
+

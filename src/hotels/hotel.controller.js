@@ -1,5 +1,6 @@
 import { response, request } from "express"
 import Hotel from "./hotel.model.js"
+import Room from "../rooms/room.model.js"
 import jwt from "jsonwebtoken"
 
 export const getHotels = async  (req = request, res = response) => {
