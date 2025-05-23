@@ -85,9 +85,8 @@ export const addReservation = async (req, res) => {
     }
 
     const { uid } = jwt.verify(token, process.env.SECRETORPRIVATEKEY);
-
     const { id } = req.params; 
-    const { roomList } = req.body; 
+    const { roomList } = req.body;
 
     const currentUser = await User.findById(uid);
     if (!currentUser) {
@@ -97,8 +96,6 @@ export const addReservation = async (req, res) => {
       });
     }
 
-    const checkReservation = await Reservation.findOne({ user: uid, state: true });
-
     const hotelRequested = await Hotel.findById(id);
     if (!hotelRequested || hotelRequested.state === false) {
       return res.status(400).json({
@@ -107,79 +104,60 @@ export const addReservation = async (req, res) => {
       });
     }
 
-    let roomsStateFalse = '';
-    let roomsAlreadyInReservation = '';
-    let newRoomList = []; 
-
-    if (checkReservation) {
-      const existingRoomIds = checkReservation.roomList.map(room => room.toString());
-
-      for (const roomId of roomList) {
-        const room = await Room.findById(roomId);
-        
-        if (!room || room.hotel.toString() !== id) {
-          roomsStateFalse += `, ${roomId}`; 
-        } else if (!room.available) {
-          roomsStateFalse += `, ${roomId}`; 
-        } else if (existingRoomIds.includes(roomId)) {
-          roomsAlreadyInReservation += `, ${roomId}`; 
-        } else {
-          newRoomList.push(room._id);
-        }
-      }
-
-      if (roomsStateFalse || roomsAlreadyInReservation) {
-        return res.status(400).json({
-          success: false,
-          message: [
-            roomsStateFalse ? `Habitaciones inválidas o no disponibles: ${roomsStateFalse.slice(2)}` : '',
-            roomsAlreadyInReservation ? `Habitaciones ya reservadas: ${roomsAlreadyInReservation.slice(2)}` : ''
-          ].filter(Boolean).join(' | ')
-        });
-      } else {
-        checkReservation.roomList.push(...newRoomList);
-        const updateReservation = await checkReservation.save();
-
-        return res.status(200).json({
-          success: true,
-          message: "Reserva actualizada con éxito",
-          updateReservation,
-        });
-      }
-    } else {
-      for (const roomId of roomList) {
-        const room = await Room.findById(roomId);
-        if (!room || room.hotel.toString() !== id || !room.available) {
-          roomsStateFalse += `, ${roomId}`;
-        } else {
-          newRoomList.push(room._id);
-        }
-      }
-
-      if (roomsStateFalse) {
-        return res.status(400).json({
-          success: false,
-          message: `Las siguientes habitaciones están ocupadas, no existen o no pertenecen al hotel: ${roomsStateFalse.slice(2)}`,
-        });
-      } else {
-        const newReservation = await Reservation.create({
-          user: uid,
-          hotel: id,
-          roomList: newRoomList,
-        });
-
-        return res.status(200).json({
-          success: true,
-          message: "Reserva creada con éxito",
-          newReservation,
-        });
-      }
+    const rooms = await Room.find({ _id: { $in: roomList } });
+    const habitacionesInvalidas = rooms.filter(r => r.hotel.toString() !== id || !r.available);
+    
+    if (habitacionesInvalidas.length > 0) {
+      const ids = habitacionesInvalidas.map(r => r._id).join(', ');
+      return res.status(400).json({
+        success: false,
+        message: `Las siguientes habitaciones están ocupadas, no existen o no pertenecen al hotel: ${ids}`,
+      });
     }
+
+    const validRoomIds = rooms.map(r => r._id.toString());
+
+    const existingReservation = await Reservation.findOne({ user: uid, hotel: id, state: true });
+
+    if (existingReservation) {
+      const existingRoomIds = existingReservation.roomList.map(r => r.toString());
+      const newRoomIds = validRoomIds.filter(roomId => !existingRoomIds.includes(roomId));
+
+      if (newRoomIds.length === 0) {
+        return res.status(400).json({
+          success: false,
+          message: "Todas las habitaciones ya están en la reservación.",
+        });
+      }
+
+      existingReservation.roomList.push(...newRoomIds);
+      const updateReservation = await existingReservation.save();
+
+      return res.status(200).json({
+        success: true,
+        message: "Reserva actualizada con éxito.",
+        updateReservation,
+      });
+    }
+
+    const newReservation = await Reservation.create({
+      user: uid,
+      hotel: id,
+      roomList: validRoomIds,
+      state: true,
+    });
+
+    return res.status(200).json({
+      success: true,
+      message: "Reserva creada con éxito.",
+      newReservation,
+    });
+
   } catch (error) {
     console.error(error);
     return res.status(500).json({
       success: false,
-      message: "Error al agregar la reservación",
+      message: "Error al agregar la reservación.",
     });
   }
 };
