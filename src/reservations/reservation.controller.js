@@ -8,7 +8,7 @@ export const listarReservacionesCliente = async (req, res) => {
   try {
     const clientId = req.usuario._id;
 
-    const reservaciones = await Reservation.find({ user: clientId, estado: true })
+    const reservaciones = await Reservation.find({ user: clientId, state: true })
       .populate("hotel", "name") 
       .populate("roomList")      
       .populate("user", "name email");
@@ -37,7 +37,7 @@ export const listarReservacionesHotel = async (req, res) => {
         });
       }
   
-      const reservaciones = await Reservation.find({ hotel: hotelId, estado: false })
+      const reservaciones = await Reservation.find({ hotel: hotelId, state: false })
       .populate("user", "name email")
       .populate("roomList");
 
