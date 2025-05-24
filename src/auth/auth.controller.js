@@ -34,7 +34,7 @@ export const login = async (req, res) => {
             });
         }
  
-        const token = await generarJWT( user.id );
+        const token = await generarJWT(user.id, user.role, user.hotel);
  
         return res.status(200).json({
             msg: 'Inicio de sesión exitoso!!',
@@ -42,8 +42,10 @@ export const login = async (req, res) => {
                 username: user.username,
                 role: user.role,
                 token: token,
+                hotel: user.hotel,
             }
-        })
+        });
+
  
     } catch (e) {
        
