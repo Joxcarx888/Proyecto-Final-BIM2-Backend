@@ -3,6 +3,7 @@ import {
   createInvoice,
   getInvoicesByClient,
   getInvoicesByHotel,
+  getInvoicesByAdmin,
   createInvoiceEvent
 } from "./invoice.controller.js";
 import { validarJWT } from "../middlewares/validar-jwt.js";
@@ -29,6 +30,13 @@ router.get(
   validarJWT,
   tieneRol("HOTEL"),
   getInvoicesByHotel
+);
+
+router.get(
+  "/admin",
+  validarJWT,
+  tieneRol("ADMIN"),
+  getInvoicesByAdmin
 );
 
 router.post(

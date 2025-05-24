@@ -2,7 +2,6 @@ import Invoice from "./invoice.model.js";
 import Reservation from "../reservations/reservation.model.js";
 import Event from "../events/event.model.js";
 import InvoiceEvent from "./invoiceEvent.model.js";
-
 import Room from "../rooms/room.model.js";
 
 
@@ -69,46 +68,71 @@ export const createInvoice = async (req, res) => {
   
 
 export const getInvoicesByClient = async (req, res) => {
-    try {
-      const userId = req.uid;
-      const invoices = await Invoice.find({ user: userId })
-        .populate("reservation")
-        .populate("hotel", "name address")
-        .sort({ createdAt: -1 });
-  
-      res.status(200).json({
-        success: true,
-        invoices,
-      });
-    } catch (error) {
-      console.error("Error al obtener facturas del cliente:", error);
-      res.status(500).json({ message: "Error interno del servidor" });
-    }
-  };
+  try {
+    const userId = req.uid;
+
+    const invoices = await Invoice.find({ user: userId })
+      .populate("reservation")
+      .populate("hotel", "name address")
+      .sort({ createdAt: -1 });
+
+    const eventInvoices = await InvoiceEvent.find({ user: userId })
+      .populate("event")
+      .populate("hotel", "name address")
+      .sort({ createdAt: -1 });
+
+    const invoicesWithType = invoices.map(i => ({ ...i.toObject(), type: 'reservation' }));
+    const eventInvoicesWithType = eventInvoices.map(e => ({ ...e.toObject(), type: 'event' }));
+
+    const allInvoices = [...invoicesWithType, ...eventInvoicesWithType];
+    allInvoices.sort((a, b) => b.createdAt - a.createdAt);
+
+    res.status(200).json({
+      success: true,
+      invoices: allInvoices,
+    });
+  } catch (error) {
+    console.error("Error al obtener facturas del cliente:", error);
+    res.status(500).json({ message: "Error interno del servidor" });
+  }
+};
+
   
   export const getInvoicesByHotel = async (req, res) => {
-    try {
-      const userId = req.uid;
-      const hotelId = req.hotel?.toString();
-  
-      if (!hotelId) {
-        return res.status(400).json({ message: "No tienes un hotel asignado" });
-      }
-  
-      const invoices = await Invoice.find({ hotel: hotelId })
-        .populate("reservation")
-        .populate("user", "name email")
-        .sort({ createdAt: -1 });
-  
-      res.status(200).json({
-        success: true,
-        invoices,
-      });
-    } catch (error) {
-      console.error("Error al obtener facturas del hotel:", error);
-      res.status(500).json({ message: "Error interno del servidor" });
+  try {
+    const hotelId = req.usuario.hotel;
+
+    if (!hotelId) {
+      return res.status(400).json({ message: "No tienes un hotel asignado" });
     }
-  };
+
+    const invoices = await Invoice.find({ hotel: hotelId })
+      .populate("reservation")
+      .populate("hotel", "name address")  // <---- Aquí agregamos
+      .populate("user", "name email")
+      .sort({ createdAt: -1 });
+
+    const eventInvoices = await InvoiceEvent.find({ hotel: hotelId })
+      .populate("event")
+      .populate("hotel", "name address")  // <---- Aquí también
+      .populate("user", "name email")
+      .sort({ createdAt: -1 });
+
+    const invoicesWithType = invoices.map(i => ({ ...i.toObject(), type: 'reservation' }));
+    const eventInvoicesWithType = eventInvoices.map(e => ({ ...e.toObject(), type: 'event' }));
+
+    const allInvoices = [...invoicesWithType, ...eventInvoicesWithType];
+    allInvoices.sort((a, b) => b.createdAt - a.createdAt);
+
+    res.status(200).json({
+      success: true,
+      invoices: allInvoices,
+    });
+  } catch (error) {
+    console.error("Error al obtener facturas del hotel:", error);
+    res.status(500).json({ message: "Error interno del servidor" });
+  }
+};
 
 
   export const createInvoiceEvent = async (req, res) => {
@@ -165,6 +189,36 @@ export const getInvoicesByClient = async (req, res) => {
       res.status(500).json({ message: "Error interno del servidor" });
     }
   };
+
+export const getInvoicesByAdmin = async (req, res) => {
+  try {
+
+    const invoices = await Invoice.find()
+      .populate("reservation")
+      .populate("hotel", "name address")
+      .populate("user", "name email")
+      .sort({ createdAt: -1 });
+
+    const eventInvoices = await InvoiceEvent.find()
+      .populate("event")
+      .populate("hotel", "name address")
+      .populate("user", "name email")
+      .sort({ createdAt: -1 });
+
+    const allInvoices = [...invoices, ...eventInvoices];
+
+    allInvoices.sort((a, b) => b.createdAt - a.createdAt);
+
+    res.status(200).json({
+      success: true,
+      invoices: allInvoices,
+    });
+  } catch (error) {
+    console.error("Error al obtener facturas para admin:", error);
+    res.status(500).json({ message: "Error interno del servidor" });
+  }
+};
+
   
   
 
