@@ -6,6 +6,7 @@ import {
     listEventsAdmin,
     updateEvent,
     deleteEvent,
+    listAllEvents
 } from "./event.controller.js";
 import { validarCampos } from "../middlewares/validar-campos.js";
 import { validarJWT } from "../middlewares/validar-jwt.js";
@@ -72,6 +73,11 @@ router.delete(
         validarCampos,
     ],
     deleteEvent
+);
+
+router.get(
+    '/all',
+    listAllEvents
 );
 
 export default router;

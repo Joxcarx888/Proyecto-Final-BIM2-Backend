@@ -514,6 +514,134 @@
 				}
 			},
 			"response": []
+		},
+		{
+			"name": "Agregar Factura Eventos",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "x-token",
+						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1aWQiOiI2ODEyOWFkMmU0MDM3MTQzZjk4ODg1YzMiLCJyb2xlIjoidXNlciIsImlhdCI6MTc0NjQ4NTc3MiwiZXhwIjoxNzQ2NDg5MzcyfQ.QMECWIntI1wUqIIoUFyza6LrvseQ5sOFhu4nZyQXJE0",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"eventId\": \"68193bfe4485643cf5f86b57\"\r\n}\r\n\r\n\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3333/penguinManagement/v1/invoice/create/event",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3333",
+					"path": [
+						"penguinManagement",
+						"v1",
+						"invoice",
+						"create",
+						"event"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Agregar eventos",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "x-token",
+						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1aWQiOiI2ODEyOWFkMmU0MDM3MTQzZjk4ODg1YzMiLCJyb2xlIjoidXNlciIsImlhdCI6MTc0NjQ4MjMyNiwiZXhwIjoxNzQ2NDg1OTI2fQ.42iMBeERx1pCmuQg4WR0FuZZ24ToHHQZsqApdgnK5mQ",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"event\": \"Charla de Invación\",\r\n  \"cronograma\": \"2025-06-10\",\r\n  \"time\": \"12:00\",\r\n  \"hotel\": \"68193bb74485643cf5f86b52\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3333/penguinManagement/v1/events",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3333",
+					"path": [
+						"penguinManagement",
+						"v1",
+						"events"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Listar eventos",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "x-token",
+						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1aWQiOiI2ODEyOWFkMmU0MDM3MTQzZjk4ODg1YzMiLCJyb2xlIjoidXNlciIsImlhdCI6MTc0NjQ4OTIwNiwiZXhwIjoxNzQ2NDkyODA2fQ.jYt8vKhXy1YzgyZXeZm9ljRE9sK-F3eQN8uauPqqEZg",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "http://localhost:3333/penguinManagement/v1/events",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3333",
+					"path": [
+						"penguinManagement",
+						"v1",
+						"events"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Listar Todos Eventos",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "x-token",
+						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1aWQiOiI2ODEyOWFkMmU0MDM3MTQzZjk4ODg1YzMiLCJyb2xlIjoidXNlciIsImlhdCI6MTc0NjQ4OTIwNiwiZXhwIjoxNzQ2NDkyODA2fQ.jYt8vKhXy1YzgyZXeZm9ljRE9sK-F3eQN8uauPqqEZg",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "http://localhost:3333/penguinManagement/v1/events",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3333",
+					"path": [
+						"penguinManagement",
+						"v1",
+						"events"
+					]
+				}
+			},
+			"response": []
 		}
 	]
 }

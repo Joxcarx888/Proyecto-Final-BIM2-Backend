@@ -95,6 +95,26 @@ export const getEvents = async (req, res = response) => {
       });
     }
   };
+
+  export const listAllEvents = async (req, res = response) => {
+  try {
+    const events = await Event.find()
+      .populate('hotel', 'name address'); 
+
+    return res.json({
+      msg: 'Lista de todos los eventos',
+      total: events.length,
+      events
+    });
+  } catch (error) {
+    console.error('Error al listar todos los eventos:', error);
+    return res.status(500).json({
+      msg: 'Error interno al obtener eventos',
+      error: error.message
+    });
+  }
+};
+
   
   
   
