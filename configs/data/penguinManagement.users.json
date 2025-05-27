@@ -1,0 +1,94 @@
+[{
+  "_id": {
+    "$oid": "681703d7b596924e117c6ac6"
+  },
+  "name": "Admin",
+  "username": "admin",
+  "email": "admin@gmail.com",
+  "password": "$argon2id$v=19$m=65536,t=3,p=4$Z+bHk6gc6Zko6fOFCkPeEA$eA67oRGppFhKFovQI+0iLYhECD2MqhQbTUqTpQg405s",
+  "role": "ADMIN",
+  "hotel": null,
+  "state": true,
+  "createdAt": {
+    "$date": "2025-05-04T06:06:15.996Z"
+  },
+  "updatedAt": {
+    "$date": "2025-05-04T06:06:15.996Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "68129ad2e4037143f98885c3"
+  },
+  "name": "Laura Martínez",
+  "username": "laura123",
+  "email": "laura@gmail.com",
+  "password": "$argon2id$v=19$m=65536,t=3,p=4$ZrG/X/+bM5gp9HbQOwfEYA$3yp8eiydK4/t7ULZaWFtvVTt1xyCdStSfRGDlaEa8Qk",
+  "role": "CLIENT",
+  "hotel": null,
+  "estado": true,
+  "createdAt": {
+    "$date": "2025-04-30T21:49:06.552Z"
+  },
+  "updatedAt": {
+    "$date": "2025-04-30T21:49:06.552Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "681712e8e124ad6cef614a3a"
+  },
+  "name": "Laura Martínez",
+  "username": "laura1234",
+  "email": "laura2@gmail.com",
+  "password": "$argon2id$v=19$m=65536,t=3,p=4$DuDIZ4liQneOioi3VTHfiA$2Vy/l6UPCg78NWu4fyfitYNAvuWMDdZX7WKo7XoZuKw",
+  "role": "CLIENT",
+  "hotel": null,
+  "state": true,
+  "createdAt": {
+    "$date": "2025-05-04T07:10:32.974Z"
+  },
+  "updatedAt": {
+    "$date": "2025-05-04T07:10:32.974Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "68171334e124ad6cef614a3d"
+  },
+  "name": "Carlos Hotel",
+  "username": "c2_hotel",
+  "email": "carlos2@hotel.com",
+  "password": "$argon2id$v=19$m=65536,t=3,p=4$5lF7e5Q2ZL9lP1gBj6xQ/Q$ptboR1eyAdzZXDO2w4HXFMMftdjIUxHnPeqgbblYtFE",
+  "role": "HOTEL",
+  "hotel": {
+    "$oid": "681711139395e35ccfbed746"
+  },
+  "state": true,
+  "createdAt": {
+    "$date": "2025-05-04T07:11:48.969Z"
+  },
+  "updatedAt": {
+    "$date": "2025-05-04T07:11:48.969Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "68179e8c884932507abdb9db"
+  },
+  "name": "Carlos Hotel",
+  "username": "c3_hotel",
+  "email": "carlos3@hotel.com",
+  "password": "$argon2id$v=19$m=65536,t=3,p=4$mS3NxtQcyBYUdYA7GvVLZQ$gYqXYbgv/GtFjXnyh1UJzyFi8287s5kuw1nNJDuLBRE",
+  "role": "HOTEL",
+  "hotel": {
+    "$oid": "68179e65884932507abdb9d8"
+  },
+  "state": true,
+  "createdAt": {
+    "$date": "2025-05-04T17:06:20.543Z"
+  },
+  "updatedAt": {
+    "$date": "2025-05-04T17:06:20.543Z"
+  }
+}]
