@@ -1,7 +1,7 @@
 import { Router } from "express"
 import { check } from "express-validator"
-import { getHotels, addHotel, updateHotel, getHotelById, deleteHotel } from "./hotel.controller.js"
-import { existeHotelById } from "../helpers/db-validator.js"
+import { getHotels, addHotel, updateHotel, getHotelById, deleteHotel, getHotelByName } from "./hotel.controller.js"
+import { existeHotelById, existeHotelByName } from "../helpers/db-validator.js"
 import { validarCampos } from "../middlewares/validar-campos.js"
 import { deleteFileOnError } from "../middlewares/delete-file-on-error.js"
 
@@ -15,6 +15,14 @@ router.get(
         check("id").custom(existeHotelById)
     ],
     getHotelById
+)
+
+router.get(
+    "/get-hotel-by-name/:name",
+    [
+        check("name").custom(existeHotelByName)
+    ],
+    getHotelByName
 )
 
 router.delete(
@@ -43,49 +51,5 @@ router.put(
     ],
     updateHotel
 )
-
-// router.put(
-//     "/update-user/:id",
-//     [
-//         check("id", "Is not a valid ID").isMongoId(),
-//         check("id").custom(userExistsById),
-//         validateFields,
-//         deleteFileOnError
-//     ],
-//     updateUser
-// )
-
-// router.put(
-//     "/update-role/:id",
-//     [
-//         check("id", "Is not a valid ID").isMongoId(),
-//         check("id").custom(userExistsById),
-//         validateFields,
-//         deleteFileOnError
-//     ],
-//     updateRoleUser
-// )
-
-// router.put(
-//     "/update-shoppingCart/:id",
-//     [
-//         check("id", "Is not a valid ID").isMongoId(),
-//         check("id").custom(productExistById),
-//         validateFields,
-//         deleteFileOnError
-//     ],
-//     addProductToUser
-// )
-
-// router.delete(
-//     "/delete-user/:id",
-//     [
-//         check("id", "Is not a valid ID").isMongoId(),
-//         check("id").custom(userExistsById),
-//         validateFields,
-//         deleteFileOnError
-//     ],
-//     deleteUser
-// )
 
 export default router

@@ -27,7 +27,6 @@ export const registerHotelAdminValidator = [
   body("password")
     .isLength({ min: 8 })
     .withMessage("Password must be at least 8 characters long"),
-  body("hotel", "Hotel ID is required").not().isEmpty(),
   //body("hotel").custom(existeHotelById), 
   validarCampos,
 ];

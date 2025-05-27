@@ -12,9 +12,12 @@ const ReservationSchema = new Schema(
       ref: "Hotel",
       required: [true, "El hotel es obligatorio"],
     },
-    roomList: {
-      type: []
-    },
+    roomList: [
+      {
+        type: Schema.Types.ObjectId,
+        ref: "Room",
+      }
+    ],
     state: {
       type: Boolean,
       default: true,

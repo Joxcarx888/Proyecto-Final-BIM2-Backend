@@ -1,12 +1,15 @@
 import Usuario from '../users/user.model.js';
 import { hash, verify } from 'argon2';
 import { generarJWT} from '../helpers/generate-jwt.js';
+import { validateHotel, validateLogin } from '../middlewares/validar-auth.js';
  
 export const login = async (req, res) => {
  
-    const { email, password, username } = req.body;
+    const { email, username } = req.body;
  
     try {
+        await validateLogin(req, res)
+            if(res.headersSent) return
        
         const lowerEmail = email ? email.toLowerCase() : null;
         const lowerUsername = username ? username.toLowerCase() : null;
@@ -15,26 +18,7 @@ export const login = async (req, res) => {
             $or: [{ email: lowerEmail }, { username: lowerUsername }]
         });
  
-        if(!user){
-            return res.status(400).json({
-                msg: 'Credenciales incorrectas, Correo no existe en la base de datos'
-            });
-        }
- 
-        if(!user.state){
-            return res.status(400).json({
-                msg: 'El usuario no existe en la base de datos'
-            });
-        }
- 
-        const validPassword = await verify(user.password, password);
-        if(!validPassword){
-            return res.status(400).json({
-                msg: 'La contraseña es incorrecta'
-            });
-        }
- 
-        const token = await generarJWT( user.id );
+        const token = await generarJWT(user.id, user.role, user.hotel);
  
         return res.status(200).json({
             msg: 'Inicio de sesión exitoso!!',
@@ -42,8 +26,10 @@ export const login = async (req, res) => {
                 username: user.username,
                 role: user.role,
                 token: token,
+                hotel: user.hotel,
             }
-        })
+        });
+
  
     } catch (e) {
        
@@ -91,11 +77,8 @@ export const registerHotelAdmin = async (req, res) => {
     try {
       const { name, username, email, password, hotel } = req.body;
   
-      if (!hotel) {
-        return res.status(400).json({
-          message: "El ID del hotel es obligatorio",
-        });
-      }
+      await validateHotel(req, res)
+        if(res.headersSent) return
   
       const encryptedPassword = await hash(password);
   

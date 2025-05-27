@@ -1,6 +1,8 @@
 import { response, request } from "express"
 import Hotel from "./hotel.model.js"
+import Room from "../rooms/room.model.js"
 import jwt from "jsonwebtoken"
+import { validarGetHotelByName } from "../middlewares/validar-hotel.js"
 
 export const getHotels = async  (req = request, res = response) => {
     try {
@@ -31,42 +33,21 @@ export const getHotels = async  (req = request, res = response) => {
 
 export const addHotel = async (req, res)=>{
     try {
-        //const token = await req.header('x-token')
-
-        // if(!token){
-        //     return res.status(401).json({
-        //         msg: 'No hay token en la peticion'
-        //     })
-        // }
-
-        //const { uid } = jwt.verify(token, process.env.SECRETORPRIVATEKEY)
-
         const data = req.body
-
-        // if(user.role == "ADMIN_ROLE" || user.role == "OWNER_ROLE"){
-        console.log(data)
-            const hotel = await Hotel.create({ 
-                name:data.name,
-                address:data.address,
-                category:data.category,
-                roomsAvailable:data.roomsAvailable,
-                amenities:data.amenities,
-                rooms:data.rooms
-             })
-            
-            return res.status(200).json({
-                success: true,
-                message: "Hotel created successfully",
-                hotel
-            })
-        // } else{
-        //     return res.status(401).json({
-        //         success: false,
-        //         message: "You are not allowed to do this."
-        //     })
-        // }
+        const hotel = await Hotel.create({ 
+            name: data.name,
+            address: data.address,
+            category: data.category,
+            roomsAvailable: data.roomsAvailable,
+            amenities: data.amenities,
+            priceEvent: data.priceEvent
+        })
         
-        
+        return res.status(200).json({
+            success: true,
+            message: "Hotel created successfully",
+            hotel
+        })
     } catch (e) {
         console.log(e)
         return res.status(500).json({
@@ -78,40 +59,21 @@ export const addHotel = async (req, res)=>{
 
 export const updateHotel = async (req, res = response)=>{
     try {
-        //const token = await req.header('x-token')
-
-        // if(!token){
-        //     return res.status(401).json({
-        //         msg: 'No hay token en la peticion'
-        //     })
-        // }
-
-        //const { uid } = jwt.verify(token, process.env.SECRETORPRIVATEKEY)
-
         const data = req.body
         const { id } = req.params
-
-        // if(user.role == "ADMIN_ROLE" || user.role == "OWNER_ROLE"){
-    
         const hotel = await Hotel.findByIdAndUpdate(id, { 
-            name:data.name,
-            address:data.address,
-            category:data.category,
-            roomsAvailable:data.roomsAvailable,
-            amenities:data.amenities,
-            rooms:data.rooms
+            name: data.name,
+            address: data.address,
+            category: data.category,
+            roomsAvailable: data.roomsAvailable,
+            amenities: data.amenities,
+            priceEvent: data.priceEvent
         } , {new:true})
         return res.status(200).json({
             success: true,
             message: "Hotel updated successfully",
             hotel
         })
-        // } else{
-        //     return res.status(401).json({
-        //         success: false,
-        //         message: "You are not allowed to do this."
-        //     })
-        // }
     } catch (e) {
         console.log(e)
         return res.status(500).json({
@@ -142,21 +104,8 @@ export const getHotelById = async (req, res = response)=>{
 
 export const deleteHotel = async (req, res = response)=>{
     try {
-        //const token = await req.header('x-token')
-
-        // if(!token){
-        //     return res.status(401).json({
-        //         msg: 'No hay token en la peticion'
-        //     })
-        // }
-
-        //const { uid } = jwt.verify(token, process.env.SECRETORPRIVATEKEY)
-
         const data = req.body
         const { id } = req.params
-
-        // if(user.role == "ADMIN_ROLE" || user.role == "OWNER_ROLE"){
-    
         const hotel = await Hotel.findByIdAndUpdate(id, { 
             state:false
         } , {new:true})
@@ -165,12 +114,6 @@ export const deleteHotel = async (req, res = response)=>{
             message: "Hotel deleted successfully",
             hotel
         })
-        // } else{
-        //     return res.status(401).json({
-        //         success: false,
-        //         message: "You are not allowed to do this."
-        //     })
-        // }
     } catch (e) {
         console.log(e)
         return res.status(500).json({
@@ -180,3 +123,28 @@ export const deleteHotel = async (req, res = response)=>{
     }
 }
 
+export const getHotelByName = async (req, res) => {
+  try {
+    const { name } = req.params;
+
+    const hotel = await Hotel.findOne({ name });
+    
+    await validarGetHotelByName(hotel, res)
+        if(res.headersSent) return
+
+    const rooms = await Room.find({ hotel: hotel._id });
+
+    return res.status(200).json({
+      success: true,
+      message: "Hotel and rooms found",
+      hotel,
+      rooms,
+    });
+  } catch (e) {
+    console.log(e);
+    return res.status(500).json({
+      message: "Error fetching hotel",
+      error: e.message,
+    });
+  }
+};

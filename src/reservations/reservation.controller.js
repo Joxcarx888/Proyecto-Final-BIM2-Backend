@@ -1,14 +1,24 @@
-import Reservation from '../reservations/reservation.model.js'
-import User from '../users/user.model.js'
-import Hotel from '../hotels/hotel.model.js'
-import jwt from 'jsonwebtoken'
-import mongoose from 'mongoose';
+import jwt from 'jsonwebtoken';
+import Reservation from './reservation.model.js';
+import User from '../users/user.model.js';
+import Hotel from '../hotels/hotel.model.js';
+import Room from '../rooms/room.model.js';
+import { 
+  validateAddReservationOne, 
+  validateAddReservationTwo, 
+  validateDeleteReservationOne, 
+  validateDeleteReservationTwo, 
+  validateListarReservacionesHotel, 
+  validateRemoveRoomsOne, 
+  validateRemoveRoomsTwo, 
+  validateToken 
+} from '../middlewares/validar-reservation.js';
 
 export const listarReservacionesCliente = async (req, res) => {
   try {
     const clientId = req.usuario._id;
 
-    const reservaciones = await Reservation.find({ user: clientId })
+    const reservaciones = await Reservation.find({ user: clientId, state: true })
       .populate("hotel", "name") 
       .populate("roomList")      
       .populate("user", "name email");
@@ -30,16 +40,13 @@ export const listarReservacionesHotel = async (req, res) => {
     try {
       const hotelId = req.usuario.hotel; 
   
-      if (!hotelId) {
-        return res.status(400).json({
-          success: false,
-          message: "Este usuario no tiene hotel asignado",
-        });
-      }
+      await validateListarReservacionesHotel(hotelId, res)
+        if(res.headersSent) return
   
-      const reservaciones = await Reservation.find({ hotel: hotelId })
-        .populate("user", "name email")
-        .populate("roomList");
+      const reservaciones = await Reservation.find({ hotel: hotelId, state: false })
+      .populate("user", "name email")
+      .populate("roomList");
+
   
       res.json({
         success: true,
@@ -76,211 +83,128 @@ export const listarTodasReservacionesAdmin = async (req, res) => {
 
 export const addReservation = async (req, res) => {
   try {
-    const token = await req.header('x-token')
-
-    if(!token){
-        return res.status(401).json({
-            msg: 'No hay token en la peticion'
-        })
-    }
-
-    const { uid } = jwt.verify(token, process.env.SECRETORPRIVATEKEY)
-
-    const { id } = req.params
-    const { roomList } = req.body
+    const token = req.header('x-token');
     
-    const currentUser = await User.findById(uid)
-    const checkReservation = await Reservation.findOne({user:uid, state:true})
-    const hotelRequested = await Hotel.findById(id)
-    let hotelsRoomsList = hotelRequested.rooms
-    let roomsStateFalse = ''
-    let newRoomList = []
-    if(hotelRequested.state == false){
-      return res.status(400.).json({
-        success: false,
-        message: 'Your hotel doesnt exist'
-      })
-    }
-    if(currentUser){
-      if(!checkReservation || checkReservation.state == false ){
-        roomList.map( localRoom => {
-          let room = hotelsRoomsList.find(lRomm => lRomm.number == localRoom)
-          if(!room || room.state == false){
-            roomsStateFalse = roomsStateFalse + `, ${localRoom}`
-          } else{
-            newRoomList.push(room)
-          }
-        })
+    await validateToken(token, res)
+        if(res.headersSent) return
+
+    const { uid } = jwt.verify(token, process.env.SECRETORPRIVATEKEY);
+    const { id } = req.params; 
+    const { roomList } = req.body;
+
+    const currentUser = await User.findById(uid);
+
+    const hotelRequested = await Hotel.findById(id);
+
+    const rooms = await Room.find({ _id: { $in: roomList } });
+    const habitacionesInvalidas = rooms.filter(r => r.hotel.toString() !== id || !r.available);
+
+    await validateAddReservationOne(currentUser, hotelRequested, habitacionesInvalidas, res)
+        if(res.headersSent) return
+
+    const validRoomIds = rooms.map(r => r._id.toString());
+
+    const existingReservation = await Reservation.findOne({ user: uid, hotel: id, state: true });
+
+    await validateAddReservationTwo(existingReservation, validRoomIds, res)
+        if(res.headersSent) return
         
-        if(roomsStateFalse){
-          return res.status(400).json({
-            success: false,
-            message: `Following one or more rooms are occupied or out of service${roomsStateFalse}`,
-          });
-        } else{
-          roomList.map(localRoom => {
-            let room = hotelsRoomsList.find(h => h.number == localRoom)
-            if(room){
-              room.state = false
-            }
-          })
-          console.log(hotelsRoomsList)
-          await Hotel.findByIdAndUpdate(id, {rooms: hotelsRoomsList}, {new:true})
-          
-          const newReservation = await Reservation.create({
-            user: uid,
-            hotel: id,
-            roomList: newRoomList
-          })
-          
-          res.status(200).json({
-            success: true,
-            message: "Reservation created successfuly",
-            newReservation
-          });
-        }
-      } else{
-        const clientsReservation = await Reservation.findOne({user:uid, state:true})
-        const clientsRoomReservated = clientsReservation.roomList
-        roomList.map( localRoom => {
-          let room = hotelsRoomsList.find(lRomm => lRomm.number == localRoom)
-          if(!room || room.state == false){
-            roomsStateFalse = roomsStateFalse + `, ${localRoom}`
-          } else{
-            newRoomList.push(room)
-          }
-        })
-        
-        if(roomsStateFalse){
-          return res.status(400).json({
-            success: false,
-            message: `Following one or more rooms are occupied or out of service${roomsStateFalse}`,
-          });
-        } else{
-          console.log(clientsReservation)
-          clientsRoomReservated.push(...newRoomList)
-          console.log(hotelsRoomsList)
-          const updateResevation = await Reservation.findByIdAndUpdate(clientsReservation.id,{
-            roomList: clientsRoomReservated
-          }, {new:true})
-          roomList.map(localRoom => {
-            let room = hotelsRoomsList.find(h => h.number == localRoom)
-            if(room){
-              room.state = false
-            }
-          })
-          await Hotel.findByIdAndUpdate(id, {rooms: hotelsRoomsList}, {new:true})
-          
-          res.status(200).json({
-            success: true,
-            message: "Reservation updated successfuly",
-            updateResevation
-          });
-        }
-      }
-    } else{
-      res.status(400).json({
-        success: false,
-        message: "You have to create an account",
-      });
-    }
+
+    const newReservation = await Reservation.create({
+      user: uid,
+      hotel: id,
+      roomList: validRoomIds,
+      state: true,
+    });
+
+    return res.status(200).json({
+      success: true,
+      message: "Reserva creada con éxito.",
+      newReservation,
+    });
+
   } catch (error) {
-    res.status(500).json({
+    console.error(error);
+    return res.status(500).json({
       success: false,
-      message: "Error adding reservations",
-    })
+      message: "Error al agregar la reservación.",
+    });
   }
-}
+};
+
 
 export const removeRooms = async (req, res) => {
   try {
-    const token = await req.header('x-token')
+    const token = req.header('x-token');
+    await validateToken(token, res)
+        if(res.headersSent) return
 
-    if(!token){
-        return res.status(401).json({
-            msg: 'No hay token en la peticion'
-        })
-    }
+    const { uid } = jwt.verify(token, process.env.SECRETORPRIVATEKEY);
+    const { roomList } = req.body;
 
-    const { uid } = jwt.verify(token, process.env.SECRETORPRIVATEKEY)
+    const currentUser = await User.findById(uid);
+    const checkReservation = await Reservation.findOne({ user: uid, state: true });
 
-    const { id } = req.params
-    const { roomList } = req.body
-    
-    const currentUser = await User.findById(uid)
-    const hotelRequested = await Hotel.findById(id)
-    let hotelsRoomsList = hotelRequested.rooms
-    const checkReservation = await Reservation.findOne({user:uid, state:true})
-    let reservationsRooms = checkReservation.roomList
+    await validateRemoveRoomsOne(currentUser, checkReservation, res)
+        if(res.headersSent) return
 
-    let newRoomList = []
-    if(currentUser){
-      if(!checkReservation || checkReservation.state == false ){
-        return res.status(400).json({
-          success:false,
-          message: "You dont have any reservation to make a change to"
-        })
-      } else{
-        let numberList = []
-        reservationsRooms.map( localReservatino => {
-          numberList.push(localReservatino.number)
-        })
-        let allExist = roomList.every(roomId => numberList.includes(roomId))
-        if(!allExist){
-          return res.status(400).json({
-            success:false,
-            message: "One or more of your rooms of your request dont exist on your reservation",
-            available: reservationsRooms
-          })
-        }
-        let reservationsRemaining = []
-        newRoomList = numberList.filter(roomId => !roomList.includes(roomId))
-        newRoomList.map( localReservation => {
-          reservationsRooms.map( localReservationDB =>{
-            if(localReservation == localReservationDB.number){
-              reservationsRemaining.push(localReservationDB)
-            }
-          })
-        })
-        const updateReservation = await Reservation.findByIdAndUpdate(checkReservation.id,{roomList: reservationsRemaining},{ new:true })
-        
-        roomList.map(localRoom => {
-          let room = hotelsRoomsList.find(h => h.number == localRoom)
-          if(room){
-            room.state = true
-          }
-        })
+    const reservationRoomIds = checkReservation.roomList.map(id => id.toString());
+    const allExist = roomList.every(roomId => reservationRoomIds.includes(roomId));
 
-        await Hotel.findByIdAndUpdate(checkReservation.hotel, {rooms: hotelsRoomsList},{new:true})
+    await validateRemoveRoomsTwo(allExist, reservationRoomIds, res)
+        if(res.headersSent) return
 
-        return res.status(200).json({
-          success: true,
-          message: "Rooms deleted successfully",
-          updateReservation
-        })
-      }
-    } else{
-      res.status(400).json({
-        success: false,
-        message: "You have to create an account",
-      });
-    }
+    const updatedRoomList = checkReservation.roomList.filter(roomId => !roomList.includes(roomId.toString()));
+
+    checkReservation.roomList = updatedRoomList;
+    await checkReservation.save();
+
+    return res.status(200).json({
+      success: true,
+      message: "Habitaciones eliminadas correctamente de la reservación",
+      updateReservation: checkReservation
+    });
 
   } catch (error) {
-    res.status(500).json({
+    console.error(error);
+    return res.status(500).json({
       success: false,
-      message: "Error removing rooms",
+      message: "Error al eliminar habitaciones",
     });
   }
-}
+};
 
-export const cancelReservation = async () => {
+export const deleteReservation = async (req, res) => {
   try {
-    
+    const token = req.header('x-token');
+    await validateToken(token, res)
+        if(res.headersSent) return
+
+    const { uid } = jwt.verify(token, process.env.SECRETORPRIVATEKEY);
+    const hotelId = req.params.id;
+
+    const user = await User.findById(uid);
+    await validateDeleteReservationOne(user, res)
+        if(res.headersSent) return
+
+    const reservation = await Reservation.findOne({ user: uid, hotel: hotelId, state: true });
+
+    await validateDeleteReservationTwo(reservation, res)
+        if(res.headersSent) return
+
+    reservation.state = false;
+    await reservation.save();
+
+    return res.status(200).json({
+      success: true,
+      message: "Reservación cancelada correctamente",
+    });
+
   } catch (error) {
-    res.status(500).json({
+    console.error("Error al cancelar reservación:", error);
+    return res.status(500).json({
       success: false,
-      message: "Error removing reservation",
+      message: "Error interno del servidor al cancelar reservación",
     });
   }
-}
+};

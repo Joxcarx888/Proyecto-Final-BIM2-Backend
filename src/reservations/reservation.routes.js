@@ -4,7 +4,8 @@ import {
   listarReservacionesHotel, 
   listarTodasReservacionesAdmin,
   addReservation,
-  removeRooms
+  removeRooms,
+  deleteReservation
 } from "../reservations/reservation.controller.js";
 import { validarJWT } from "../middlewares/validar-jwt.js";
 import { tieneRol } from "../middlewares/validar-roles.js";
@@ -35,13 +36,23 @@ router.get(
 router.post(
   '/reservation/:id',
   validarJWT,
+  tieneRol('CLIENT'),
   addReservation
 )
 
 router.delete(
-  '/delete-rooms/:id',
+  '/delete-rooms',
   validarJWT,
+  tieneRol('CLIENT'),
   removeRooms
-)
+);
+
+router.delete(
+  '/reservation/:id', 
+  validarJWT,
+  tieneRol('CLIENT'),
+  deleteReservation
+);
+
 
 export default router;

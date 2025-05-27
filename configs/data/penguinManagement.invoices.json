@@ -1,0 +1,26 @@
+[{
+  "_id": {
+    "$oid": "6817c23cf9b860688eb12cdd"
+  },
+  "user": {
+    "$oid": "68129ad2e4037143f98885c3"
+  },
+  "hotel": {
+    "$oid": "681711139395e35ccfbed746"
+  },
+  "reservation": {
+    "$oid": "6817b4328d5c15390a36e96c"
+  },
+  "fechaCancelacion": {
+    "$date": "2025-05-04T19:38:36.709Z"
+  },
+  "estadoCliente": "HOSPEDADO",
+  "diasEstadia": 2,
+  "total": 300,
+  "createdAt": {
+    "$date": "2025-05-04T19:38:36.718Z"
+  },
+  "updatedAt": {
+    "$date": "2025-05-04T19:48:30.002Z"
+  }
+}]

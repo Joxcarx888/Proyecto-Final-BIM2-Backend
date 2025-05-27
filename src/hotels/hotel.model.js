@@ -22,9 +22,11 @@ const HotelSchema = Schema(
         amenities: {
             type: String
         },
-        rooms: {
-            type: []
+        priceEvent: {
+            type: Number,
+            required: [true, "Price is required"]
         },
+        
         state:{
             type: Boolean,
             default: true
