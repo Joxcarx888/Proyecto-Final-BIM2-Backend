@@ -74,11 +74,13 @@ export const getInvoicesByClient = async (req, res) => {
     const invoices = await Invoice.find({ user: userId })
       .populate("reservation")
       .populate("hotel", "name address")
+      .populate("user", "name email")
       .sort({ createdAt: -1 });
 
     const eventInvoices = await InvoiceEvent.find({ user: userId })
       .populate("event")
       .populate("hotel", "name address")
+      .populate("user", "name email")
       .sort({ createdAt: -1 });
 
     const invoicesWithType = invoices.map(i => ({ ...i.toObject(), type: 'reservation' }));
@@ -108,13 +110,13 @@ export const getInvoicesByClient = async (req, res) => {
 
     const invoices = await Invoice.find({ hotel: hotelId })
       .populate("reservation")
-      .populate("hotel", "name address")  // <---- Aquí agregamos
+      .populate("hotel", "name address")  
       .populate("user", "name email")
       .sort({ createdAt: -1 });
 
     const eventInvoices = await InvoiceEvent.find({ hotel: hotelId })
       .populate("event")
-      .populate("hotel", "name address")  // <---- Aquí también
+      .populate("hotel", "name address")  
       .populate("user", "name email")
       .sort({ createdAt: -1 });
 

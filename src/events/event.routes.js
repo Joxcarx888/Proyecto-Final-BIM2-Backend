@@ -49,14 +49,12 @@ router.put(
     "/:id",
     [
         validarJWT,
-        tieneRol("CLIENT"),
         check("id", "No es un ID válido").isMongoId(),
         check("id").custom(existenteEvent),
         check("event", "El nombre del evento es obligatorio").not().isEmpty(),
         check("date", "La fecha del evento es obligatoria").isDate(),
         check("time", "La hora debe estar en formato hh:mm")
             .matches(/^([01]\d|2[0-3]):([0-5]\d)$/),
-        check("hotel", "El nombre del hotel es obligatorio").not().isEmpty(),
         validarCampos,
     ],
     updateEvent
@@ -67,7 +65,6 @@ router.delete(
     "/:id",
     [
         validarJWT,
-        tieneRol("CLIENT"),
         check("id", "No es un ID válido").isMongoId(),
         check("id").custom(existenteEvent),
         validarCampos,

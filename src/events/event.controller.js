@@ -120,97 +120,78 @@ export const getEvents = async (req, res = response) => {
   
 
   export const updateEvent = async (req, res = response) => {
-    try {
-        const { id } = req.params;
-        const userId = req.usuario._id;
-        const userRole = req.usuario.role;
+  try {
+    const { id } = req.params;
+    const userId = req.usuario._id;
 
-        const existingEvent = await Event.findById(id);
+    const existingEvent = await Event.findById(id);
 
-        if (!existingEvent || !existingEvent.estado) {
-            return res.status(404).json({ 
-                msg: 'Evento no encontrado' 
-            });
-        }
-
-        
-        if (userRole !== 'ADMIN' && existingEvent.usuario.toString() !== userId.toString()) {
-            return res.status(403).json({ 
-                msg: 'No tienes permisos para actualizar este evento' 
-            });
-        }
-
-        const { event, date, time, hotel } = req.body;
-
-        const conflictEvent = await Event.findOne({
-            _id: { $ne: id },
-            hotel,
-            date,
-            time,
-            estado: true,
-        });
-
-        if (conflictEvent) {
-            return res.status(400).json({
-                msg: 'Ya existe otro evento programado en ese hotel para esa fecha y hora.',
-            });
-        }
-
-        const updatedEvent = await Event.findByIdAndUpdate(
-            id,
-            { event, date, time, hotel },
-            { new: true }
-        );
-
-        return res.status(200).json({
-            msg: 'Evento actualizado correctamente',
-            event: updatedEvent,
-        });
-    } catch (error) {
-        console.error('Error al actualizar evento:', error);
-
-        return res.status(500).json({
-            msg: 'Error al actualizar evento',
-            error: error.message,
-        });
+    if (!existingEvent || !existingEvent.estado) {
+      return res.status(404).json({ msg: 'Evento no encontrado' });
     }
+
+    if (existingEvent.usuario.toString() !== userId.toString()) {
+      return res.status(403).json({ msg: 'No tienes permiso para editar este evento.' });
+    }
+
+    const { event, date, time } = req.body;
+
+    existingEvent.event = event ?? existingEvent.event;
+    existingEvent.date = date ?? existingEvent.date;
+    existingEvent.time = time ?? existingEvent.time;
+
+    await existingEvent.save();
+
+    return res.status(200).json({
+      msg: 'Evento actualizado correctamente',
+      event: existingEvent,
+    });
+  } catch (error) {
+    console.error('Error al actualizar evento:', error);
+
+    return res.status(500).json({
+      msg: 'Error al actualizar evento',
+      error: error.message,
+    });
+  }
 };
+
 
 
 export const deleteEvent = async (req, res = response) => {
-    try {
-        const { id } = req.params;
-        const userId = req.usuario._id;
-        const userRole = req.usuario.role;
+  try {
+    const { id } = req.params;
+    const userId = req.usuario._id;
+    const userRole = req.usuario.role;
 
-        const event = await Event.findById(id);
+    const event = await Event.findById(id);
 
-        if (!event || !event.estado) {
-            return res.status(404).json({ 
-                msg: 'Evento no encontrado' 
-            });
-        }
-
-        if (userRole !== 'ADMIN' && event.usuario.toString() !== userId.toString()) {
-            return res.status(403).json({ 
-                msg: 'No tienes permisos para eliminar este evento' 
-            });
-        }
-
-        event.estado = false;
-        await event.save();
-
-        return res.status(200).json({
-            msg: 'Evento eliminado correctamente (desactivado)',
-            event,
-        });
-    } catch (error) {
-        console.error('Error al eliminar evento:', error);
-
-        return res.status(500).json({
-            msg: 'Error al eliminar evento',
-            error: error.message,
-        });
+    // Evento no existe o ya fue pagado (estado === false)
+    if (!event) {
+      return res.status(404).json({ 
+        msg: 'Evento no encontrado' 
+      });
     }
+
+    if (event.estado === false) {
+      return res.status(400).json({ 
+        msg: 'No se puede eliminar un evento ya pagado' 
+      });
+    }
+
+    await event.deleteOne();
+
+    return res.status(200).json({
+      msg: 'Evento eliminado permanentemente',
+    });
+  } catch (error) {
+    console.error('Error al eliminar evento:', error);
+
+    return res.status(500).json({
+      msg: 'Error al eliminar evento',
+      error: error.message,
+    });
+  }
 };
+
 
