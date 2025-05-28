@@ -146,7 +146,7 @@ export const createInvoiceEvent = async (req, res) => {
       estado: true 
     }).populate("hotel");
     
-    await validateCreateInvoiceEventTwo(event, res)
+    await validateCreateInvoiceEventTwo(event, userId, res);
       if(res.headersSent) return
 
     const precioEvento = event.precio;

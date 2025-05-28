@@ -50,23 +50,23 @@ export const validateCreateInvoiceEventOne = async (eventId, res) => {
     }
 }
 
-export const validateCreateInvoiceEventTwo = async (event, res) => {
-    try {
-        if (!event) {
-          return res.status(404).json({ message: "No se encontró el evento indicado" });
-        }
-
-        if (event.usuario.toString() !== userId.toString()) {
-          return res.status(403).json({ message: "No tienes permisos para facturar este evento" });
-        }
-
-        if (!event.hotel) {
-          return res.status(400).json({ message: "El evento no está vinculado a ningún hotel" });
-        }
-    } catch (e) {
-        return res.status(500).json({
-            message: "Server error",
-            error: e.message
-        })
+export const validateCreateInvoiceEventTwo = async (event, userId, res) => {
+  try {
+    if (!event) {
+      return res.status(404).json({ message: "No se encontró el evento indicado" });
     }
-}
+
+    if (event.usuario.toString() !== userId.toString()) {
+      return res.status(403).json({ message: "No tienes permisos para facturar este evento" });
+    }
+
+    if (!event.hotel) {
+      return res.status(400).json({ message: "El evento no está vinculado a ningún hotel" });
+    }
+  } catch (e) {
+    return res.status(500).json({
+      message: "Server error",
+      error: e.message
+    });
+  }
+};

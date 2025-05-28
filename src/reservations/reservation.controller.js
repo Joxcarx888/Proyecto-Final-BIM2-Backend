@@ -177,34 +177,33 @@ export const removeRooms = async (req, res) => {
 export const deleteReservation = async (req, res) => {
   try {
     const token = req.header('x-token');
-    await validateToken(token, res)
-        if(res.headersSent) return
+
+    await validateToken(token, res);
+    if (res.headersSent) return;
 
     const { uid } = jwt.verify(token, process.env.SECRETORPRIVATEKEY);
-    const hotelId = req.params.id;
+    const reservationId = req.params.id;
 
     const user = await User.findById(uid);
-    await validateDeleteReservationOne(user, res)
-        if(res.headersSent) return
+    await validateDeleteReservationOne(user, res);
+    if (res.headersSent) return;
 
-    const reservation = await Reservation.findOne({ user: uid, hotel: hotelId, state: true });
+    const reservation = await Reservation.findOne({ _id: reservationId, user: uid });
+    await validateDeleteReservationTwo(reservation, res);
+    if (res.headersSent) return;
 
-    await validateDeleteReservationTwo(reservation, res)
-        if(res.headersSent) return
-
-    reservation.state = false;
-    await reservation.save();
+    await Reservation.findByIdAndDelete(reservationId);
 
     return res.status(200).json({
       success: true,
-      message: "Reservación cancelada correctamente",
+      message: "Reservación eliminada correctamente",
     });
 
   } catch (error) {
-    console.error("Error al cancelar reservación:", error);
+    console.error("Error al eliminar reservación:", error);
     return res.status(500).json({
       success: false,
-      message: "Error interno del servidor al cancelar reservación",
+      message: "Error interno del servidor al eliminar reservación",
     });
   }
 };

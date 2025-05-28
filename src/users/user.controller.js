@@ -1,6 +1,67 @@
 import { hash, verify } from 'argon2';
 import Usuario from '../users/user.model.js';
 import { validateAceptUser, validateDeleteUser, validateUpdateUser, validateUpdateUserTwo } from '../middlewares/validar-user.js';
+import crypto from 'crypto'; 
+
+
+
+const sendResetEmail = async (email, token) => {
+  console.log(`🔐 Enlace para restablecer: http://localhost:3333/penguinManagement/v1/users/reset-password/${token}`);
+};
+
+export const forgotPassword = async (req, res) => {
+  const { email } = req.body;
+
+  try {
+    const user = await Usuario.findOne({ email });
+    if (!user) {
+      return res.status(404).json({ msg: 'Usuario no encontrado con ese correo' });
+    }
+
+    const token = crypto.randomBytes(32).toString('hex');
+    const expire = Date.now() + 1000 * 60 * 30;
+
+    user.resetToken = token;
+    user.resetTokenExpires = new Date(expire);
+    await user.save();
+
+    await sendResetEmail(email, token);
+
+    return res.status(200).json({ msg: 'Token de recuperación enviado al correo' });
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({ msg: 'Error al procesar solicitud' });
+  }
+};
+
+export const resetPassword = async (req, res) => {
+  const { token } = req.params;
+  const { password } = req.body;
+
+  try {
+    const user = await Usuario.findOne({
+      resetToken: token,
+      resetTokenExpires: { $gt: Date.now() }
+    });
+
+    if (!user) {
+      return res.status(400).json({ msg: "Token no válido o expirado" });
+    }
+
+    user.password = await hash(password);
+    user.resetToken = null;
+    user.resetTokenExpires = null;
+
+    await user.save();
+
+    return res.status(200).json({ msg: "Contraseña actualizada con éxito" });
+  } catch (err) {
+    console.error("Error en resetPassword:", err);
+    return res.status(500).json({ msg: "Error al cambiar la contraseña" });
+  }
+};
+
+
 
 export const updateUser = async (req, res) => {
     try {

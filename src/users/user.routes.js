@@ -1,12 +1,27 @@
 import { Router } from "express";
 import { check } from "express-validator";
-import { updateUser, deleteUser, acceptUser, getUsers } from "./user.controller.js";
+import { updateUser, deleteUser, acceptUser, getUsers, forgotPassword,resetPassword } from "./user.controller.js";
 import { validarCampos } from "../middlewares/validar-campos.js";
 import { validarJWT } from "../middlewares/validar-jwt.js";
 
 const router = Router();
 
-// Editar usuario
+
+router.post(
+  '/forgot-password',
+   forgotPassword
+);
+
+router.post
+(
+  '/reset-password/:token',
+  [
+    check("newPassword", "La nueva contraseña debe tener al menos 8 caracteres").optional().isLength({ min: 8 }),
+  ],
+   resetPassword
+);
+
+
 router.put(
   "/editar/:id?",
   [
