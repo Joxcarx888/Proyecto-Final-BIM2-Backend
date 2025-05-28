@@ -50,7 +50,6 @@ router.delete(
 router.delete(
   '/reservation/:id', 
   validarJWT,
-  tieneRol('CLIENT'),
   deleteReservation
 );
 

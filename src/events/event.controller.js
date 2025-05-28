@@ -1,38 +1,30 @@
 import Event from './event.model.js';
 import Hotel from '../hotels/hotel.model.js';
+import {validateCreateEvent, validateListEventsAdmin, validateUpdateEvent, validateUpdateEventTwo} from '../middlewares/validar-events.js'
 import { response } from 'express';
 
 export const createEvent = async (req, res = response) => {
     try {
         const { event, cronograma, time, hotel } = req.body;
         const user = req.usuario._id;
-
         const existingEvent = await Event.findOne({
-            hotel,
-            date: cronograma,
-            time,
+          hotel,
+          date: cronograma,
+          time,
         });
-
-        if (existingEvent) {
-            return res.status(400).json({
-                msg: 'Ya existe un evento programado en ese hotel para esa fecha y hora.',
-            });
-        }
-
+        
         const hotelData = await Hotel.findById(hotel);
-        if (!hotelData) {
-            return res.status(404).json({
-                msg: 'Hotel no encontrado',
-            });
-        }
+
+        await validateCreateEvent(existingEvent, hotelData, res)
+          if(res.headersSent) return
 
         const newEvent = await Event.create({
-            usuario: user,
-            event,
-            date: cronograma,
-            time,
-            hotel,
-            precio: hotelData.priceEvent,
+          usuario: user,
+          event,
+          date: cronograma,
+          time,
+          hotel,
+          precio: hotelData.priceEvent,
         });
 
         return res.status(201).json({
@@ -52,32 +44,30 @@ export const createEvent = async (req, res = response) => {
 
 
 export const getEvents = async (req, res = response) => {
-    try {
-      const userId = req.usuario._id;
-  
-      const events = await Event.find({ usuario: userId, estado: true })
-        .populate('hotel', 'name address');
-  
-      return res.status(200).json({ 
-        events 
-      });
-    } catch (error) {
-      console.error('Error al obtener eventos del usuario:', error);
-      return res.status(500).json({
-        msg: 'Error al obtener eventos del usuario',
-        error: error.message,
-      });
-    }
-  };
-  
+  try {
+    const userId = req.usuario._id;
 
+    const events = await Event.find({ usuario: userId, estado: true })
+      .populate('hotel', 'name address');
+
+    return res.status(200).json({ 
+      events 
+    });
+  } catch (error) {
+    console.error('Error al obtener eventos del usuario:', error);
+    return res.status(500).json({
+      msg: 'Error al obtener eventos del usuario',
+      error: error.message,
+    });
+  }
+};
+  
   export const listEventsAdmin = async (req, res) => {
     try {
       const { role, hotel } = req.usuario;
   
-      if (role !== 'HOTEL') {
-        return res.status(403).json({ msg: 'Acceso denegado. No eres un hotel.' });
-      }
+      await validateListEventsAdmin(role, res)
+        if(res.headersSent) return
   
       const events = await Event.find({ hotel, estado: false })
         .populate('hotel', 'name address');
@@ -115,10 +105,6 @@ export const getEvents = async (req, res = response) => {
   }
 };
 
-  
-  
-  
-
   export const updateEvent = async (req, res = response) => {
   try {
     const { id } = req.params;
@@ -126,13 +112,8 @@ export const getEvents = async (req, res = response) => {
 
     const existingEvent = await Event.findById(id);
 
-    if (!existingEvent || !existingEvent.estado) {
-      return res.status(404).json({ msg: 'Evento no encontrado' });
-    }
-
-    if (existingEvent.usuario.toString() !== userId.toString()) {
-      return res.status(403).json({ msg: 'No tienes permiso para editar este evento.' });
-    }
+    await validateUpdateEvent(existingEvent, userId, res)
+        if(res.headersSent) return
 
     const { event, date, time } = req.body;
 
@@ -166,18 +147,8 @@ export const deleteEvent = async (req, res = response) => {
 
     const event = await Event.findById(id);
 
-    // Evento no existe o ya fue pagado (estado === false)
-    if (!event) {
-      return res.status(404).json({ 
-        msg: 'Evento no encontrado' 
-      });
-    }
-
-    if (event.estado === false) {
-      return res.status(400).json({ 
-        msg: 'No se puede eliminar un evento ya pagado' 
-      });
-    }
+    await validateUpdateEventTwo(event, res)
+        if(res.headersSent) return
 
     await event.deleteOne();
 
@@ -193,5 +164,3 @@ export const deleteEvent = async (req, res = response) => {
     });
   }
 };
-
-

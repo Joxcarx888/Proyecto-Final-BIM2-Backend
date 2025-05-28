@@ -3,6 +3,16 @@ import Reservation from './reservation.model.js';
 import User from '../users/user.model.js';
 import Hotel from '../hotels/hotel.model.js';
 import Room from '../rooms/room.model.js';
+import { 
+  validateAddReservationOne, 
+  validateAddReservationTwo, 
+  validateDeleteReservationOne, 
+  validateDeleteReservationTwo, 
+  validateListarReservacionesHotel, 
+  validateRemoveRoomsOne, 
+  validateRemoveRoomsTwo, 
+  validateToken 
+} from '../middlewares/validar-reservation.js';
 
 export const listarReservacionesCliente = async (req, res) => {
   try {
@@ -30,12 +40,8 @@ export const listarReservacionesHotel = async (req, res) => {
     try {
       const hotelId = req.usuario.hotel; 
   
-      if (!hotelId) {
-        return res.status(400).json({
-          success: false,
-          message: "Este usuario no tiene hotel asignado",
-        });
-      }
+      await validateListarReservacionesHotel(hotelId, res)
+        if(res.headersSent) return
   
       const reservaciones = await Reservation.find({ hotel: hotelId, state: false })
       .populate("user", "name email")
@@ -75,71 +81,34 @@ export const listarTodasReservacionesAdmin = async (req, res) => {
   }
 }
 
-
-
-
 export const addReservation = async (req, res) => {
   try {
     const token = req.header('x-token');
-    if (!token) {
-      return res.status(401).json({ msg: 'No hay token en la petición' });
-    }
+    
+    await validateToken(token, res)
+        if(res.headersSent) return
 
     const { uid } = jwt.verify(token, process.env.SECRETORPRIVATEKEY);
     const { id } = req.params; 
     const { roomList } = req.body;
 
     const currentUser = await User.findById(uid);
-    if (!currentUser) {
-      return res.status(400).json({
-        success: false,
-        message: "El usuario no existe en la base de datos.",
-      });
-    }
 
     const hotelRequested = await Hotel.findById(id);
-    if (!hotelRequested || hotelRequested.state === false) {
-      return res.status(400).json({
-        success: false,
-        message: 'El hotel no existe o está inactivo.',
-      });
-    }
 
     const rooms = await Room.find({ _id: { $in: roomList } });
     const habitacionesInvalidas = rooms.filter(r => r.hotel.toString() !== id || !r.available);
-    
-    if (habitacionesInvalidas.length > 0) {
-      const ids = habitacionesInvalidas.map(r => r._id).join(', ');
-      return res.status(400).json({
-        success: false,
-        message: `Las siguientes habitaciones están ocupadas, no existen o no pertenecen al hotel: ${ids}`,
-      });
-    }
+
+    await validateAddReservationOne(currentUser, hotelRequested, habitacionesInvalidas, res)
+        if(res.headersSent) return
 
     const validRoomIds = rooms.map(r => r._id.toString());
 
     const existingReservation = await Reservation.findOne({ user: uid, hotel: id, state: true });
 
-    if (existingReservation) {
-      const existingRoomIds = existingReservation.roomList.map(r => r.toString());
-      const newRoomIds = validRoomIds.filter(roomId => !existingRoomIds.includes(roomId));
-
-      if (newRoomIds.length === 0) {
-        return res.status(400).json({
-          success: false,
-          message: "Todas las habitaciones ya están en la reservación.",
-        });
-      }
-
-      existingReservation.roomList.push(...newRoomIds);
-      const updateReservation = await existingReservation.save();
-
-      return res.status(200).json({
-        success: true,
-        message: "Reserva actualizada con éxito.",
-        updateReservation,
-      });
-    }
+    await validateAddReservationTwo(existingReservation, validRoomIds, res)
+        if(res.headersSent) return
+        
 
     const newReservation = await Reservation.create({
       user: uid,
@@ -167,9 +136,8 @@ export const addReservation = async (req, res) => {
 export const removeRooms = async (req, res) => {
   try {
     const token = req.header('x-token');
-    if (!token) {
-      return res.status(401).json({ msg: 'No hay token en la peticion' });
-    }
+    await validateToken(token, res)
+        if(res.headersSent) return
 
     const { uid } = jwt.verify(token, process.env.SECRETORPRIVATEKEY);
     const { roomList } = req.body;
@@ -177,23 +145,14 @@ export const removeRooms = async (req, res) => {
     const currentUser = await User.findById(uid);
     const checkReservation = await Reservation.findOne({ user: uid, state: true });
 
-    if (!currentUser || !checkReservation) {
-      return res.status(400).json({
-        success: false,
-        message: "No tienes una reservación activa para modificar"
-      });
-    }
+    await validateRemoveRoomsOne(currentUser, checkReservation, res)
+        if(res.headersSent) return
 
     const reservationRoomIds = checkReservation.roomList.map(id => id.toString());
     const allExist = roomList.every(roomId => reservationRoomIds.includes(roomId));
 
-    if (!allExist) {
-      return res.status(400).json({
-        success: false,
-        message: "Una o más habitaciones no están en tu reservación actual",
-        available: reservationRoomIds
-      });
-    }
+    await validateRemoveRoomsTwo(allExist, reservationRoomIds, res)
+        if(res.headersSent) return
 
     const updatedRoomList = checkReservation.roomList.filter(roomId => !roomList.includes(roomId.toString()));
 
@@ -218,47 +177,33 @@ export const removeRooms = async (req, res) => {
 export const deleteReservation = async (req, res) => {
   try {
     const token = req.header('x-token');
-    if (!token) {
-      return res.status(401).json({ msg: 'No hay token en la petición' });
-    }
+
+    await validateToken(token, res);
+    if (res.headersSent) return;
 
     const { uid } = jwt.verify(token, process.env.SECRETORPRIVATEKEY);
-    const hotelId = req.params.id;
-
+    const reservationId = req.params.id;
 
     const user = await User.findById(uid);
-    if (!user) {
-      return res.status(404).json({
-        success: false,
-        message: "Usuario no encontrado",
-      });
-    }
+    await validateDeleteReservationOne(user, res);
+    if (res.headersSent) return;
 
-    
-    const reservation = await Reservation.findOne({ user: uid, hotel: hotelId, state: true });
+    const reservation = await Reservation.findOne({ _id: reservationId, user: uid });
+    await validateDeleteReservationTwo(reservation, res);
+    if (res.headersSent) return;
 
-    if (!reservation) {
-      return res.status(404).json({
-        success: false,
-        message: "No se encontró una reservación activa para este hotel",
-      });
-    }
-
-    reservation.state = false;
-    await reservation.save();
+    await Reservation.findByIdAndDelete(reservationId);
 
     return res.status(200).json({
       success: true,
-      message: "Reservación cancelada correctamente",
+      message: "Reservación eliminada correctamente",
     });
 
   } catch (error) {
-    console.error("Error al cancelar reservación:", error);
+    console.error("Error al eliminar reservación:", error);
     return res.status(500).json({
       success: false,
-      message: "Error interno del servidor al cancelar reservación",
+      message: "Error interno del servidor al eliminar reservación",
     });
   }
 };
-
-

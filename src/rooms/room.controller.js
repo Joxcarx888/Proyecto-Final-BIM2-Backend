@@ -3,6 +3,7 @@ import User from "../users/user.model.js";
 import Invoice from "../invoices/invoice.model.js";
 import Reservation from "../reservations/reservation.model.js";
 import Hotel from "../hotels/hotel.model.js";
+import { validateAddRoom, validateAddRoomThree, validateAddRoomTwo, validateGgetMyHotelRooms, validateGgetMyHotelRoomsTwo } from "../middlewares/validar-room.js";
 
 
 export const addRoom = async (req, res) => {
@@ -15,35 +16,22 @@ export const addRoom = async (req, res) => {
     const user = await User.findById(uid);
     console.log(" Usuario encontrado:", user);
 
-    if (!user || user.role !== "HOTEL" || !user.hotel) {
-      console.log(" Usuario no autorizado o sin hotel asignado");
-      return res.status(403).json({
-        success: false,
-        message: "Unauthorized to add rooms."
-      });
-    }
+    await validateAddRoom(user, res)
+        if(res.headersSent) return
 
     console.log(" ID del hotel asignado al usuario:", user.hotel);
 
     const hotel = await Hotel.findById(user.hotel);
     console.log(" Hotel encontrado en la BD:", hotel);
 
-    if (!hotel) {
-      return res.status(404).json({
-        success: false,
-        message: "Hotel not found."
-      });
-    }
+    await validateAddRoomTwo(hotel, res)
+        if(res.headersSent) return
 
     const currentRoomCount = await Room.countDocuments({ hotel: user.hotel });
     console.log(` Habitaciones actuales: ${currentRoomCount} / ${hotel.roomsAvailable}`);
 
-    if (currentRoomCount >= hotel.roomsAvailable) {
-      return res.status(400).json({
-        success: false,
-        message: `No se pueden agregar más habitaciones. Límite alcanzado (${hotel.roomsAvailable})`
-      });
-    }
+    await validateAddRoomThree(currentRoomCount, hotel, res)
+        if(res.headersSent) return
 
     const newRoom = new Room({
       hotel: user.hotel,
@@ -94,12 +82,8 @@ export const getMyHotelRooms = async (req, res) => {
       const uid = req.uid;
       const user = await User.findById(uid);
   
-      if (!user || user.role !== "HOTEL" || !user.hotel) {
-        return res.status(403).json({
-          success: false,
-          message: "Unauthorized to view hotel rooms."
-        });
-      }
+      await validateGgetMyHotelRooms(user, res)
+        if(res.headersSent) return
   
       const hotelId = user.hotel;
   
@@ -107,33 +91,8 @@ export const getMyHotelRooms = async (req, res) => {
   
       const now = new Date();
   
-      for (const invoice of invoices) {
-        const { diasEstadia, fechaCancelacion, reservation, estadoCliente } = invoice;
-        if (!reservation || !fechaCancelacion) continue;
-  
-        const fechaInicio = new Date(fechaCancelacion);
-        const fechaFin = new Date(fechaInicio);
-        fechaFin.setDate(fechaFin.getDate() + diasEstadia);
-  
-        const { roomList } = reservation;
-  
-        if (now >= fechaFin) {
-          await Room.updateMany(
-            { _id: { $in: roomList }, available: false },
-            { $set: { available: true } }
-          );
-        } else {
-          await Room.updateMany(
-            { _id: { $in: roomList }, available: true },
-            { $set: { available: false } }
-          );
-  
-          if (estadoCliente !== "HOSPEDADO") {
-            invoice.estadoCliente = "HOSPEDADO";
-            await invoice.save();
-          }
-        }
-      }
+      await validateGgetMyHotelRoomsTwo(invoices, now, res)
+        if(res.headersSent) return
   
       const rooms = await Room.find({ hotel: hotelId });
   

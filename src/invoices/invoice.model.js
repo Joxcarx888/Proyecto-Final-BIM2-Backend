@@ -19,7 +19,7 @@ const InvoiceSchema = new Schema(
     },
     fechaCancelacion: {
       type: Date,
-      default: [true, "La Fecha es requerida"],
+      required: [true, "La Fecha es requerida"],
     },
     estadoCliente: {
       type: String,

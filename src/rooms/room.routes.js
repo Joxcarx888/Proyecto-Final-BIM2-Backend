@@ -27,7 +27,6 @@ router.get(
 router.get(
   '/my-hotel',
   validarJWT,
-  tieneRol('HOTEL'),
   getMyHotelRooms
 );
 
