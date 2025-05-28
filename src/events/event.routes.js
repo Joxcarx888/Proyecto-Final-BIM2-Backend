@@ -6,7 +6,8 @@ import {
     listEventsAdmin,
     updateEvent,
     deleteEvent,
-    listAllEvents
+    listAllEvents,
+    listEventsByHotel
 } from "./event.controller.js";
 import { validarCampos } from "../middlewares/validar-campos.js";
 import { validarJWT } from "../middlewares/validar-jwt.js";
@@ -41,7 +42,6 @@ router.get(
 router.get(
     '/hotel', 
     validarJWT,
-    tieneRol("HOTEL"), 
     listEventsAdmin
 );
 
@@ -75,6 +75,11 @@ router.delete(
 router.get(
     '/all',
     listAllEvents
+);
+
+router.get(
+    '/byHotel/:id',
+     listEventsByHotel
 );
 
 export default router;

@@ -164,3 +164,31 @@ export const deleteEvent = async (req, res = response) => {
     });
   }
 };
+
+export const listEventsByHotel = async (req, res = response) => {
+  try {
+    const { id } = req.params; 
+
+    const hotelExists = await Hotel.findById(id);
+    if (!hotelExists) {
+      return res.status(404).json({
+        msg: 'Hotel no encontrado',
+      });
+    }
+
+    const events = await Event.find({ hotel: id, estado: false })
+
+    return res.status(200).json({
+      msg: 'Eventos del hotel',
+      total: events.length,
+      events,
+    });
+  } catch (error) {
+    console.error('Error al listar eventos por hotel:', error);
+    return res.status(500).json({
+      msg: 'Error interno al obtener eventos por hotel',
+      error: error.message,
+    });
+  }
+};
+
